@@ -8,8 +8,8 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 
 ## Input
-coords = [55, 100, -50]
-angle = 20
+coords = [55, 60, -20]
+angle = 40
 
 
 ## Variables
