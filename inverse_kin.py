@@ -72,8 +72,10 @@ my_chain.plot(location, ax)
 matplotlib.pyplot.show()
 
 # number of steps
-steps[0] = (location[1]*xlength)/distance*stepsperrev
-steps[1] = (location[2]*ylength)/distance*stepsperrev
-steps[2] = (location[3]*zlength)/distance*stepsperrev
+# this gives the number of revs. Advait does it so n*stepsperrev
+# steps here is n in his code
+steps[0] = (location[1]*xlength)/distance#*stepsperrev
+steps[1] = (location[2]*ylength)/distance#*stepsperrev
+steps[2] = (location[3]*zlength)/distance#*stepsperrev
 steps[3] = angle/1.8
 print(steps)

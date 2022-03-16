@@ -11,9 +11,9 @@ import math
 x_distance = 5 #mm CHANGE
 
 ## Variables
-stepsperrev = 200 #200 steps/rev
+stepsperrev = 400 #400 steps/rev, we're using half steps
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 150 # LENGTH OF GANTRY AXIS
+xlength = 132 # LENGTH OF GANTRY AXIS
 
 ## Define Chain
 my_chain = Chain(name='gantry', links=[
@@ -37,5 +37,6 @@ my_chain.plot(location, ax)
 matplotlib.pyplot.show()
 
 # number of steps
-steps = (location[1]*xlength)/distance*stepsperrev
+steps = (location[1]*xlength)/distance# this gives the number of revs. Advait does it so n*stepsperrev
+# steps here is n in his code
 print(steps)
