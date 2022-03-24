@@ -6,6 +6,10 @@ import ikpy.utils.plot as plot_utils
 import matplotlib.pyplot
 from mpl_toolkits.mplot3d import Axes3D
 import math
+import serial
+import time
+
+## Serial Setup to Arduino
 
 ## Input
 coords = [55, 60, -20]
