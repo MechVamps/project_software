@@ -1,26 +1,24 @@
+#include <Servo.h>
+int servoPin=3;
+//int end_angle=180;
+int reading=0;
+Servo Servo1;
+
 void setup() {
   Serial.begin(115200);
+  Servo1.attach(servoPin);
   pinMode(LED_BUILTIN, OUTPUT);
 }
 void loop() {
-//  if(Serial.available()) {
-//    char data = Serial.read();
-//    char str[2];
-//    str[0] = data;
-//    str[1] = '\0';
-//    Serial.print(str);
-//  }
    if (Serial.available())
     {
+        //Servo1.write(0);
+        //digitalWrite(LED_BUILTIN, LOW);
+        //delay(2000);
         String a = Serial.readString();
-        Serial.print("Received Value: ");
-        Serial.println(a);
-        int b = a.toInt();
-        if(b==1){
-          digitalWrite(LED_BUILTIN, HIGH);
-        }
-        if(b==0){
-          digitalWrite(LED_BUILTIN, LOW);
-        }
+        int end_angle = a.toInt();
+        Servo1.write(end_angle);
+        digitalWrite(LED_BUILTIN, HIGH);
+        //delay(1000);
     }
 }

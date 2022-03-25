@@ -5,8 +5,8 @@ time.sleep(1) #give the connection a second to settle
 if True:
     #ser.write(input_value.encode())
     #time.sleep(2)
-    ser.write(b'0')
+    ser.write(b'180')
     time.sleep(2)
-    ser.write(b'1')
+    ser.write(b'0')
     # ser.close()
     # exit()
