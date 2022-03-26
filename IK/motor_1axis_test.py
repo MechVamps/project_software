@@ -47,10 +47,14 @@ print(steps)
 ser = serial.Serial(port, 115200, timeout=.1)
 time.sleep(1) #give the connection a second to settle
 
+# Convert to str
+ser_input = str(int(steps))
+ser_input = bytes(ser_input, encoding="ascii")
+
 if True:
     #ser.write(input_value.encode())
     #time.sleep(2)
-    ser.write(steps.encode())
+    ser.write(ser_input)
     time.sleep(2)
     ser.write(b'0')
     # ser.close()
