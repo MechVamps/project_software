@@ -15,15 +15,14 @@ void loop() {
         //digitalWrite(LED_BUILTIN, LOW);
         //delay(2000);
         String a = Serial.readString();
-        int end_angle = a.toInt();
-        Servo1.write(end_angle);
+        int rotations = a.toInt();
         digitalWrite(LED_BUILTIN, HIGH);
         //delay(1000);
 
         digitalWrite(dirPin, HIGH);
 
         // Spin the stepper motor 1 revolution quickly:
-        for (int i = 0; i < stepsPerRevolution; i++) {
+        for (int i = 0; i < rotations*stepsPerRevolution; i++) {
           // These four lines result in 1 step:
           digitalWrite(stepPin, HIGH);
           delayMicroseconds(1000);

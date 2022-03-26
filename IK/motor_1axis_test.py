@@ -9,8 +9,8 @@ import math
 import serial, time
 
 ## Input
-x_distance = 20 #mm CHANGE
-port = 'COM4'
+x_distance = 100 #mm CHANGE
+port = 'COM7'
 
 ## Variables
 stepsperrev = 400 #400 steps/rev, we're using half steps
