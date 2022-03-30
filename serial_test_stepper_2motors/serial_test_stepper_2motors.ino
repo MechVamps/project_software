@@ -36,28 +36,28 @@ void loop() {
         
         digitalWrite(LED_BUILTIN, HIGH);
         //delay(1000);
-
-        digitalWrite(dirPin, LOW);
-        // Spin the stepper motor revolutions fast:
-        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
-          // These four lines result in 1 step:
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        }
-        delay(500);
-        // Set the spinning direction clockwise of MOTOR2:
-        digitalWrite(dirPin1, LOW);
-        // Spin the stepper motor revolutions fast:
-        for (int i = 0; i < rotations1 * stepsPerRevolution; i++) {
-          // These four lines result in 1 step:
-          digitalWrite(stepPin1, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin1, LOW);
-          delayMicroseconds(500);
-        }
-        delay(500);
+//
+//        digitalWrite(dirPin, LOW);
+//        // Spin the stepper motor revolutions fast:
+//        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
+//          // These four lines result in 1 step:
+//          digitalWrite(stepPin, HIGH);
+//          delayMicroseconds(500);
+//          digitalWrite(stepPin, LOW);
+//          delayMicroseconds(500);
+//        }
+//        delay(500);
+//        // Set the spinning direction clockwise of MOTOR2:
+//        digitalWrite(dirPin1, LOW);
+//        // Spin the stepper motor revolutions fast:
+//        for (int i = 0; i < rotations1 * stepsPerRevolution; i++) {
+//          // These four lines result in 1 step:
+//          digitalWrite(stepPin1, HIGH);
+//          delayMicroseconds(500);
+//          digitalWrite(stepPin1, LOW);
+//          delayMicroseconds(500);
+//        }
+//        delay(500);
         // Set the spinning direction counterclockwise  of MOTOR2:
         digitalWrite(dirPin1, HIGH);
         // Spin the stepper motor revolutions fast:
@@ -81,6 +81,6 @@ void loop() {
         }
         delay(500);
 
-        digitalWrite(LED_BUILTIN, LOW)
+        digitalWrite(LED_BUILTIN, LOW);
     }
 }
