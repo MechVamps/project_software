@@ -18,8 +18,8 @@ serial_port = 'COM7'
 ## Variables
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 150
-ylength = 245
+xlength = 187
+ylength = 254
 steps = np.zeros((3,1)) #x,y,z
 
 def chain_and_gantry_ik(initial,final):
