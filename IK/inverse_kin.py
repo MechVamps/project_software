@@ -12,8 +12,8 @@ import time
 ## Serial Setup to Arduino
 
 ## Input
-coords = [55, 60, -20]
-angle = 40
+coords = [85, 70, 0]
+angle = 20
 
 
 ## Variables
@@ -50,18 +50,18 @@ my_chain = Chain(name='gantry', links=[
         translation=[0,ylength,0],
         joint_type='prismatic'
     ),
-    URDFLink(
-        name="z_gantry",
-        origin_translation=[0, 0, 0],
-        origin_orientation=[0, 0, 0],
-        translation=[0,0,-zlength],
-        joint_type='prismatic'
-    ),
+    # URDFLink(
+    #     name="z_gantry",
+    #     origin_translation=[0, 0, 0],
+    #     origin_orientation=[0, 0, 0],
+    #     translation=[0,0,-zlength],
+    #     joint_type='prismatic'
+    # ),
     URDFLink(
         name="yaw",
-        origin_translation=[tran_x, tran_y, 0],
+        origin_translation=[tran_x, tran_y, -tran_z],
         origin_orientation=[0, 0, 0],
-        rotation=[0,0,0],
+        rotation=[0,0,0]#math.radians(50)],
         #joint_type='revolute'
     )
 ])
