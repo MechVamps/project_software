@@ -25,10 +25,10 @@ steps = np.zeros((3,1)) #x,y,z
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
     hypotenuse = 30 ## CHANGE
-    temp = hypotenuse*math.cos(math.radians(15)) # constant
-    tran_z = hypotenuse*math.sin(math.radians(15)) # constant
-    tran_x = temp*math.sin(math.radians(angle))
-    tran_y = temp*math.cos(math.radians(angle))
+    temp = hypotenuse*math.cos(math.radians(15)) # predetermined constant angle ## CHANGE 15
+    tran_z = hypotenuse*math.sin(math.radians(15))
+    tran_x = temp*math.sin(math.radians(angle+90))
+    tran_y = temp*math.cos(math.radians(angle+90))
 
     ## Define Chain
     my_chain = Chain(name='gantry', links=[
@@ -47,10 +47,15 @@ def chain_and_gantry_ik(initial,final):
             translation=[0,ylength,0],
             joint_type='prismatic'
         ),
-        ### NEED to include end effector
-        ### DOUBLE CHECK if end effector is correct
         URDFLink(
-            name="yaw",
+            name="gantry_to_servo",
+            origin_translation=[-98.2, -0.7, -231.8],
+            origin_orientation=[0, 0, 0],
+            translation=[0,0,0],
+            joint_type='prismatic'
+        ),
+        URDFLink(
+            name="servo",
             origin_translation=[tran_x, tran_y, -tran_z],
             origin_orientation=[0, 0, 0],
             rotation=[0,0,0]

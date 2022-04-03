@@ -12,7 +12,7 @@ import time
 ## Serial Setup to Arduino
 
 ## Input
-coords = [205, 150, 0]
+coords = [10, 150, 0]
 angle = -20
 
 
@@ -50,7 +50,7 @@ my_chain = Chain(name='gantry', links=[
     ),
     URDFLink(
         name="gantry_to_servo",
-        origin_translation=[90.8, 3.2, -187.3],
+        origin_translation=[-98.2, -0.7, -231.8],
         origin_orientation=[0, 0, 0],
         translation=[0,0,0],
         joint_type='prismatic'
