@@ -12,8 +12,8 @@ import time
 ## Serial Setup to Arduino
 
 ## Input
-coords = [85, 70, 0]
-angle = 20
+coords = [205, 150, 0]
+angle = -20
 
 
 ## Variables
@@ -22,16 +22,14 @@ distance = 1.27 #mm distance travelled for 1/4-20
 xlength = 150
 ylength = 245
 zlength = 100
-steps = np.zeros((4,1)) #x,y,z,yaw
+steps = np.zeros((3,1)) #x,y,z,yaw
 
 ## Trig angle for link coords
 hypotenuse = 30 ## CHANGE
 temp = hypotenuse*math.cos(math.radians(15)) # predetermined constant angle ## CHANGE 15
 tran_z = hypotenuse*math.sin(math.radians(15))
-tran_x = temp*math.sin(math.radians(angle))
-tran_y = temp*math.cos(math.radians(angle))
-
-print(tran_x,tran_y,tran_z)
+tran_x = temp*math.sin(math.radians(angle+90))
+tran_y = temp*math.cos(math.radians(angle+90))
 
 ## Define Chain
 my_chain = Chain(name='gantry', links=[
@@ -50,19 +48,18 @@ my_chain = Chain(name='gantry', links=[
         translation=[0,ylength,0],
         joint_type='prismatic'
     ),
-    # URDFLink(
-    #     name="z_gantry",
-    #     origin_translation=[0, 0, 0],
-    #     origin_orientation=[0, 0, 0],
-    #     translation=[0,0,-zlength],
-    #     joint_type='prismatic'
-    # ),
     URDFLink(
-        name="yaw",
+        name="gantry_to_servo",
+        origin_translation=[90.8, 3.2, -187.3],
+        origin_orientation=[0, 0, 0],
+        translation=[0,0,0],
+        joint_type='prismatic'
+    ),
+    URDFLink(
+        name="servo",
         origin_translation=[tran_x, tran_y, -tran_z],
         origin_orientation=[0, 0, 0],
-        rotation=[0,0,0]#math.radians(50)],
-        #joint_type='revolute'
+        rotation=[0,0,0]
     )
 ])
 
@@ -81,5 +78,5 @@ matplotlib.pyplot.show()
 steps[0] = (location[1]*xlength)/distance#*stepsperrev
 steps[1] = (location[2]*ylength)/distance#*stepsperrev
 steps[2] = (location[3]*zlength)/distance#*stepsperrev
-steps[3] = angle/1.8
+#steps[3] = angle/1.8
 print(steps)
