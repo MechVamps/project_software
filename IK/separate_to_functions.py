@@ -21,7 +21,7 @@ xlength = 150
 ylength = 245
 steps = np.zeros((3,1)) #x,y,z
 
-def chain_and_ik(initial,final):
+def chain_and_gantry_ik(initial,final):
     ## Define Chain
     my_chain = Chain(name='gantry', links=[
         OriginLink(),
@@ -69,5 +69,5 @@ def serial_to_arduino(port,steps):
         ser.write(ser_input)
         time.sleep(1)
 
-chain_and_ik(init_loc,target)
+chain_and_gantry_ik(init_loc,target)
 serial_to_arduino(serial_port,steps)
