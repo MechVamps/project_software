@@ -3,6 +3,7 @@
 #define dirPin1 30
 #define stepPin1 32
 #define stepsPerRevolution 400
+#include <Servo.h>
 
 int servoPin=3;
 int reading=0;
@@ -27,49 +28,40 @@ void setup() {
 void loop() {
    if (Serial.available())
     {
+        // SERIAL READ
         String a = Serial.readString();
         int commaIndex = a.indexOf(',');
-        int secondCommaIndex = myString.indexOf(';');
+        int secondCommaIndex = a.indexOf(';');
 
         String x = a.substring(0, commaIndex);
-        String y = a.substring(commaIndex + 1), secondCommaIndex);
+        String y = a.substring(commaIndex + 1, secondCommaIndex);
         String angle = a.substring(secondCommaIndex + 1);
 
         int rotations = x.toInt();
         int rotations1 = y.toInt();
         int end_angle = angle.toInt();
 
-        // Figure out motor direction
-        if rotations >= 0{
-          dir_motor1 = HIGH;
+        // MOTOR DIRECTION
+        if(rotations >= 0){
+          digitalWrite(dirPin, HIGH);
         }
-        if rotations < 0{
-          dir_motor1 = LOW;
+        if(rotations < 0){
+          digitalWrite(dirPin, LOW);
           rotations = abs(rotations);
         }
         
-        if rotations1 >= 0{
-          dir_motor2 = HIGH;
+        if(rotations1 >= 0){
+          digitalWrite(dirPin1, HIGH);
         }
-        if rotations1 < 0{
-          dir_motor2 = LOW;
-          rotations1 = abs(rotations);
+        if(rotations1 < 0){
+          digitalWrite(dirPin1, LOW);
+          rotations1 = abs(rotations1);
         }
 
-        // Sanity check
+        // SANITY CHECK
         digitalWrite(LED_BUILTIN, HIGH);
-        
-        digitalWrite(dirPin1, dir_motor2);
-        // Spin the stepper motor revolutions fast:
-        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
-          // These four lines result in 1 step:
-          digitalWrite(stepPin1, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin1, LOW);
-          delayMicroseconds(500);
-        }
-        delay(500);
-        digitalWrite(dirPin, dir_motor1);
+
+        // MOTOR 1 move
         // Spin the stepper motor revolutions fast:
         for (int i = 0; i < rotations1 * stepsPerRevolution; i++) {
           // These four lines result in 1 step:
@@ -80,9 +72,22 @@ void loop() {
         }
         delay(500);
 
+        // MOTOR 2 move
+        // Spin the stepper motor revolutions fast:
+        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
+          // These four lines result in 1 step:
+          digitalWrite(stepPin1, HIGH);
+          delayMicroseconds(500);
+          digitalWrite(stepPin1, LOW);
+          delayMicroseconds(500);
+        }
+        delay(500);
+
+        // SERVO MOVE
         Servo1.write(end_angle);
         delay(500);
 
+        // SANITY CHECK
         digitalWrite(LED_BUILTIN, LOW);
     }
 }
