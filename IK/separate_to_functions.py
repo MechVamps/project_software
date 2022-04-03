@@ -11,6 +11,7 @@ import time
 
 ## Input
 target = [85, 60, 0] # where do you want the object to be
+angle = 30 # yaw angle, NEED TO FIX IK FOR THIS
 init_loc = [0 ,0 ,0] # where is the object at the start of this
 serial_port = 'COM7'
 
@@ -60,7 +61,7 @@ def serial_to_arduino(port,steps):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
-    ser_input = varx + ',' + vary
+    ser_input = varx + ',' + vary + ';' + angle
     print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
