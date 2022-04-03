@@ -5,7 +5,7 @@
 #define stepsPerRevolution 400
 #include <Servo.h>
 
-int servoPin=3;
+int servoPin=42;
 int reading=0;
 Servo Servo1;
 
@@ -43,7 +43,7 @@ void loop() {
 
         // MOTOR DIRECTION
         if(rotations >= 0){
-          digitalWrite(dirPin, HIGH);
+          digitalWrite(dirPin, LOW);
         }
         if(rotations < 0){
           digitalWrite(dirPin, LOW);
@@ -51,7 +51,7 @@ void loop() {
         }
         
         if(rotations1 >= 0){
-          digitalWrite(dirPin1, HIGH);
+          digitalWrite(dirPin1, LOW);
         }
         if(rotations1 < 0){
           digitalWrite(dirPin1, LOW);

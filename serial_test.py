@@ -1,5 +1,5 @@
 import serial, time
-ser = serial.Serial('COM4', 115200, timeout=.1)
+ser = serial.Serial('COM7', 115200, timeout=.1)
 time.sleep(1) #give the connection a second to settle
 #input_value = input('Enter pixel position: ')
 if True:

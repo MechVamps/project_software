@@ -80,7 +80,7 @@ def serial_to_arduino(port,steps):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
-    ser_input = varx + ',' + vary + ';' + angle
+    ser_input = varx + ',' + vary + ';' + str(angle)
     print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
