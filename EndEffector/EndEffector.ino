@@ -1,6 +1,6 @@
 // Servo Motor
 #include <Servo.h>
-int servoPin=3;
+int servoPin=9;
 int Led=2;
 int end_angle=30;
 int reading=0;
