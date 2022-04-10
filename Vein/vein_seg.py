@@ -12,6 +12,7 @@ from skimage.morphology import (erosion, dilation, opening, closing,  # noqa
                                 white_tophat)
 from skimage.util import img_as_float, img_as_ubyte
 from skimage import measure
+from skimage.measure import LineModelND, ransac
 from sklearn.cluster import DBSCAN
 import sys
 
@@ -87,6 +88,69 @@ cluster_map[label_img==0] = 0
 cluster_map[label_img==1] = 0.5
 cluster_map[label_img==2] = 1
 
+# knowing label_img == 1 is the biggest cluster 
+max_clus_indices = np.where(label_img==1)
+x = np.array(max_clus_indices[1])
+y = np.array(max_clus_indices[0])
+clus_data = np.column_stack([x, y])
+# clus_data = 1 
+# print(clus_data)
+# fit line using all data
+model = LineModelND()
+model.estimate(clus_data)
+print(clus_data.shape)
+
+# robustly fit line only using inlier data with RANSAC algorithm
+model_robust, inliers = ransac(clus_data, LineModelND, min_samples=2,
+                               residual_threshold=1, max_trials=1000)
+outliers = inliers == False
+
+# generate coordinates of estimated models
+line_x = np.arange(0, 250)
+line_y = model.predict_y(line_x)
+line_y_robust = model_robust.predict_y(line_x)
+print(line_x)
+print(line_y)
+
+line_vec = [line_x[1]-line_x[0], line_y[1]-line_y[0]]
+x_axis_vec = [0, line_y[1]-line_y[0]]
+print(line_vec)
+print(x_axis_vec)
+
+def unit_vector(vector):
+    """ Returns the unit vector of the vector.  """
+    return vector / np.linalg.norm(vector)
+
+def angle_between(v1, v2):
+    """ Returns the angle in radians between vectors 'v1' and 'v2'::
+
+            >>> angle_between((1, 0, 0), (0, 1, 0))
+            1.5707963267948966
+            >>> angle_between((1, 0, 0), (1, 0, 0))
+            0.0
+            >>> angle_between((1, 0, 0), (-1, 0, 0))
+            3.141592653589793
+    """
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
+
+yaw_angle = angle_between(line_vec, x_axis_vec) # in radians 
+print(yaw_angle)
+
+
+
+# fig, ax = plt.subplots()
+# ax.plot(clus_data[inliers, 0], clus_data[inliers, 1], '.b', alpha=0.6,
+#         label='Inlier data')
+# ax.plot(clus_data[outliers, 0], clus_data[outliers, 1], '.r', alpha=0.6,
+#         label='Outlier data')
+# ax.plot(line_x, line_y, '-k', label='Line model from all data')
+# ax.plot(line_x, line_y_robust, '-b', label='Robust line model')
+# ax.legend(loc='lower left')
+# plt.show()
+
+
 # Number of clusters in labels, ignoring noise if present.
 n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
 n_noise_ = list(labels).count(-1)
@@ -100,9 +164,10 @@ fig, ([[ax1, ax2, ax3], [ax4, ax5, ax6]]) = plt.subplots(2, 3)
 ax1.imshow(gray_image, cmap=plt.cm.gray)
 ax2.imshow(blurred_ROI, cmap=plt.cm.gray)
 ax3.imshow(binary_ROI, cmap=plt.cm.gray)
-# ax4.imshow(erosed_ROI, cmap=plt.cm.gray)
-ax5.imshow(masked_ROI, cmap=plt.cm.gray)
+ax4.imshow(masked_ROI, cmap=plt.cm.gray)
+ax5.imshow(cluster_map, cmap=plt.cm.gray)
 ax6.imshow(cluster_map, cmap=plt.cm.gray)
+ax6.plot(line_x, line_y, '-k', label='Line model from all data')
 
 '''
 # draw circles around insertion point
