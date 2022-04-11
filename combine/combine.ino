@@ -104,13 +104,13 @@ void loop() {
           // retracts the actuator
           digitalWrite(IN1_PIN, LOW);
           digitalWrite(IN2_PIN, HIGH);
-          delay(1000);
+          delay(500);
         }
         if(inject.equals('pull')){
           // extend the actuator
           digitalWrite(IN1_PIN, HIGH);
           digitalWrite(IN2_PIN, LOW);
-          delay(1000);
+          delay(500);
         }
         // SANITY CHECK
         digitalWrite(LED_BUILTIN, LOW);
