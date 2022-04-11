@@ -77,19 +77,19 @@ def chain_and_gantry_ik(initial,final):
     print(steps)
 
     # If want to plot
-    ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
-    ax.set_zlabel('z')
-    my_chain.plot(location, ax)
-    matplotlib.pyplot.show()
+    # ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
+    # ax.set_xlabel('x')
+    # ax.set_ylabel('y')
+    # ax.set_zlabel('z')
+    # my_chain.plot(location, ax)
+    # matplotlib.pyplot.show()
 
     return steps
 
 def serial_to_arduino(port,steps,lin_act_dir):
     # Establish Serial
-    #ser = serial.Serial(port, 115200, timeout=.1)
-    #time.sleep(1) #give the connection a second to settle
+    ser = serial.Serial(port, 115200, timeout=.1)
+    time.sleep(1) #give the connection a second to settle
 
     # Convert to str
     varx = str(int(steps[0]))
@@ -98,13 +98,13 @@ def serial_to_arduino(port,steps,lin_act_dir):
     # lin_act_dir is the direction of the linear actuator and can only be "push" or "pull"
     # Combine serial
     ser_input = varx + ',' + vary + ';' + str(angle) + '?' + lin_act_dir
-    #print(ser_input)
+    print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
 
-    #if True:
-    #    ser.write(ser_input)
-    #    time.sleep(1)
+    if True:
+       ser.write(ser_input)
+       time.sleep(1)
 
 # Step 1
 chain_and_gantry_ik(init_loc,target)
