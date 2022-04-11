@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import time
 import imutils
+from VeinDetectionUtil import getTargetPoint2D, getYawAngle
 
 # Configure IR stream
 self.pipeline = rs.pipeline()
