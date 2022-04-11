@@ -8,8 +8,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import serial
 import time
+#from RealsenseUtil import get_target_point_camera_pose
 
 ## Input
+#target = get_target_point_camera_pose()
 target = [85, 60, 0] # where do you want the object to be
 angle = 30 # yaw angle, NEED TO FIX IK FOR THIS
 init_loc = [0 ,0 ,0] # where is the object at the start of this
