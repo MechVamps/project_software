@@ -13,9 +13,9 @@ import time
 #################IF THERE IS ANGLE ERROR, IT'S BECAUSE OF THE +90 IN ALL OF THEM
 ## Input
 #target = get_target_point_camera_pose()
-target = [85, 60, -283] # where do you want the object to be
-angle = 0 # yaw angle, NEED TO FIX IK FOR THIS
-init_loc = [30.9,16.98,-283] # where is the object at the start of this
+target = [85, 60, -306] # where do you want the object to be
+angle = 30 # yaw angle, NEED TO FIX IK FOR THIS
+init_loc = [30.9,16.98,-306] # where is the object at the start of this
 serial_port = 'COM7'
 
 ## Variables
@@ -30,13 +30,11 @@ under_skin = np.add(target,under_skin)
 print(under_skin)
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
-    hypotenuse = 30 ## CHANGE
-    temp = hypotenuse*math.cos(math.radians(15)) # predetermined constant angle ## CHANGE 15
-    tran_x = temp*math.sin(math.radians(angle+90))
-    tran_y = temp*math.cos(math.radians(angle+90))
-
+    hypotenuse = 90
+    tran_x = hypotenuse*math.cos(math.radians(angle+90))
+    tran_y = hypotenuse*math.sin(math.radians(angle+90))
     tran_z = -23
-    
+
 
     ## Define Chain
     my_chain = Chain(name='gantry', links=[
@@ -62,12 +60,12 @@ def chain_and_gantry_ik(initial,final):
             translation=[0,0,0],
             joint_type='prismatic'
         ),
-        # URDFLink(
-        #     name="servo",
-        #     origin_translation=[tran_x, tran_y, -tran_z],
-        #     origin_orientation=[0, 0, 0],
-        #     rotation=[0,0,0]
-        # )
+        URDFLink(
+            name="servo",
+            origin_translation=[tran_x, tran_y, tran_z],
+            origin_orientation=[0, 0, 0],
+            rotation=[0,0,0]
+        )
     ])
 
     ## IK does its thing
@@ -78,13 +76,13 @@ def chain_and_gantry_ik(initial,final):
     steps[1] = (location[2]*ylength)/distance - (location_in[2]*ylength)/distance
     print(steps)
 
-    # # If want to plot
-    # ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
-    # ax.set_xlabel('x')
-    # ax.set_ylabel('y')
-    # ax.set_zlabel('z')
-    # my_chain.plot(location, ax)
-    # matplotlib.pyplot.show()
+    # If want to plot
+    ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+    my_chain.plot(location, ax)
+    matplotlib.pyplot.show()
 
     return steps
 
