@@ -13,9 +13,9 @@ import time
 #################IF THERE IS ANGLE ERROR, IT'S BECAUSE OF THE +90 IN ALL OF THEM
 ## Input
 #target = get_target_point_camera_pose()
-target = [85, 60, 0] # where do you want the object to be
-angle = 30 # yaw angle, NEED TO FIX IK FOR THIS
-init_loc = [0 ,0 ,0] # where is the object at the start of this
+target = [85, 60, -283] # where do you want the object to be
+angle = 0 # yaw angle, NEED TO FIX IK FOR THIS
+init_loc = [30.9,16.98,-283] # where is the object at the start of this
 serial_port = 'COM7'
 
 ## Variables
@@ -25,15 +25,18 @@ xlength = 187
 ylength = 254
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [target[0] + 25*math.cos(math.radians(angle+90)), target[1] + 25*math.sin(math.radians(angle+90)), 0]
-
+under_skin = [25*math.cos(math.radians(angle+90)),25*math.sin(math.radians(angle+90)),0]
+under_skin = np.add(target,under_skin)
+print(under_skin)
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
     hypotenuse = 30 ## CHANGE
     temp = hypotenuse*math.cos(math.radians(15)) # predetermined constant angle ## CHANGE 15
-    tran_z = hypotenuse*math.sin(math.radians(15))
     tran_x = temp*math.sin(math.radians(angle+90))
     tran_y = temp*math.cos(math.radians(angle+90))
+
+    tran_z = -23
+    
 
     ## Define Chain
     my_chain = Chain(name='gantry', links=[
@@ -53,33 +56,36 @@ def chain_and_gantry_ik(initial,final):
             joint_type='prismatic'
         ),
         URDFLink(
-            name="gantry_to_servo",
-            origin_translation=[-98.2, -0.7, -231.8],
+            name="gantry_to_preneedle",
+            origin_translation=[30.9,16.98,-283],
             origin_orientation=[0, 0, 0],
             translation=[0,0,0],
             joint_type='prismatic'
         ),
-        URDFLink(
-            name="servo",
-            origin_translation=[tran_x, tran_y, -tran_z],
-            origin_orientation=[0, 0, 0],
-            rotation=[0,0,0]
-        )
+        # URDFLink(
+        #     name="servo",
+        #     origin_translation=[tran_x, tran_y, -tran_z],
+        #     origin_orientation=[0, 0, 0],
+        #     rotation=[0,0,0]
+        # )
     ])
 
     ## IK does its thing
     location = my_chain.inverse_kinematics(final)
-    
+    location_in = my_chain.inverse_kinematics(initial)
     # Convert to number of motor rotations. This is what's inputted to arduino
-    # (- initial/distance) is to make it not relative
-    """
-    [[57.57092171]
-    [11.95975503]
-    [ 0.        ]]
-    """
-    steps[0] = (location[1]*xlength)/distance - initial[0]/distance
-    steps[1] = (location[2]*ylength)/distance - initial[1]/distance
+    steps[0] = (location[1]*xlength)/distance - (location_in[1]*xlength)/distance
+    steps[1] = (location[2]*ylength)/distance - (location_in[2]*ylength)/distance
     print(steps)
+
+    # # If want to plot
+    # ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
+    # ax.set_xlabel('x')
+    # ax.set_ylabel('y')
+    # ax.set_zlabel('z')
+    # my_chain.plot(location, ax)
+    # matplotlib.pyplot.show()
+
     return steps
 
 def serial_to_arduino(port,steps,lin_act_dir):
@@ -94,7 +100,7 @@ def serial_to_arduino(port,steps,lin_act_dir):
     # lin_act_dir is the direction of the linear actuator and can only be "push" or "pull"
     # Combine serial
     ser_input = varx + ',' + vary + ';' + str(angle) + '?' + lin_act_dir
-    print(ser_input)
+    #print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
 
@@ -110,14 +116,14 @@ serial_to_arduino(serial_port,steps,'pull')
 chain_and_gantry_ik(target,under_skin)
 serial_to_arduino(serial_port,steps,'pull')
 
-# Step 3
-chain_and_gantry_ik(under_skin,under_skin)
-serial_to_arduino(serial_port,steps,'push')
+# # Step 3
+# chain_and_gantry_ik(under_skin,under_skin)
+# serial_to_arduino(serial_port,steps,'push')
 
-# Step 4
-chain_and_gantry_ik(under_skin,target)
-serial_to_arduino(serial_port,steps,'push')
+# # Step 4
+# chain_and_gantry_ik(under_skin,target)
+# serial_to_arduino(serial_port,steps,'push')
 
-# Step 5
-chain_and_gantry_ik(target,init_loc)
-serial_to_arduino(serial_port,steps,'push')
+# # Step 5
+# chain_and_gantry_ik(target,init_loc)
+# serial_to_arduino(serial_port,steps,'push')
