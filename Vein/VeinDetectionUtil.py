@@ -30,27 +30,11 @@ def generateROIImg(img, r1, c1, r2, c2):
             mask[i-r1, j-c1] = img[i, j]
     return mask 
 
+
 # TODO: test with better lighting and less noise again 
 def get_image_from_stream():
     ''' Capture RGB image from realsense RGB stream '''
     return True  
-
-
-# load the image
-image = skimage.io.imread("fake_arm_0.png")
-gray_image = skimage.color.rgb2gray(image)
-
-
-image_show = cv2.imread("fake_arm_0.png")
-image_show = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-# working region for current thresholding 
-mask_rtx = 200
-mask_rty = 280
-mask_lbx = 300
-mask_lby = 400
-
-ROI_img = generateROIImg(gray_image, mask_rtx, mask_rty, mask_lbx, mask_lby) 
 
 
 def get_vein_map(img):
@@ -80,7 +64,6 @@ def get_vein_map(img):
 
     return label_img
 
-vein_map = get_vein_map(ROI_img)
 
 def get_vein(vein_map):
     ''' Return an arrays of pixels indices of the biggest vein on 
@@ -93,8 +76,7 @@ def get_vein(vein_map):
     idx_array = np.column_stack([x, y])
 
     return idx_array
-
-vein_pxls = get_vein(vein_map)    
+ 
 
 def get_center_vein_line(vein, img_max_row):
     ''' Given target vein pixels, fit a center line in the selected vein '''
@@ -118,12 +100,8 @@ def get_center_vein_line(vein, img_max_row):
     line_y_r = line_y_robust[y_img_ids_r]
     line_x_r = line_x[y_img_ids_r]
     '''
-
     return line_x, line_y
 
-vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, 100)
-print("vein_line_x: ", vein_line_x)
-print("vein_line_y: ", vein_line_y)
 
 def get_target_point_2d(vein_cx, vein_cy):
     '''
@@ -135,36 +113,21 @@ def get_target_point_2d(vein_cx, vein_cy):
 
     return center_point
 
-def get_target_point_camera_pose(target_pt_2d):
-    # TODO: get depth from realsense 
-    return 0 
 
-def get_target_point_robot_pose(camera_target_pt):
-    # TODO: calculate transformation matrix  
-    return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+# def get_target_point_camera_pose(target_pt_2d):
+#     # TODO: get depth from realsense 
+#     return 0 
 
 
-target_point = get_target_point_2d(vein_line_x, vein_line_y)
+# def get_target_point_robot_pose(camera_target_pt):
+#     # TODO: calculate transformation matrix  
+#     return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-print("target_point: ", target_point)
-
-# draw circles around target point
-# rr, cc = circle_perimeter(target_point[1], target_point[0], 5)
-rr, cc = circle_perimeter(target_point[1] + mask_rtx, target_point[0] + mask_rty, 15)
-# rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
-print(rr, cc)
-image_show[rr, cc] = (255, 0, 0)
-# rgb_ROI_img[rr, cc] = (255, 0, 0)
-
-
-line_vec = [vein_line_x[1]-vein_line_x[0], vein_line_y[1]-vein_line_y[0]]
-x_axis_vec = [0, vein_line_y[1]-vein_line_y[0]]
-# print(line_vec)
-# print(x_axis_vec)
 
 def unit_vector(vector):
     """ Returns the unit vector of the vector.  """
     return vector / np.linalg.norm(vector)
+
 
 def angle_between(v1, v2):
     """ Returns the angle in radians between vectors 'v1' and 'v2'::
@@ -180,8 +143,57 @@ def angle_between(v1, v2):
     v2_u = unit_vector(v2)
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
-yaw_angle = angle_between(line_vec, x_axis_vec) # in radians 
-print("yaw angle: ", yaw_angle)
+
+
+# load the image
+image = skimage.io.imread("fake_arm_0.png")
+gray_image = skimage.color.rgb2gray(image)
+
+
+image_show = cv2.imread("fake_arm_0.png")
+image_show = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+
+# working region for current thresholding 
+mask_rtx = 200
+mask_rty = 280
+mask_lbx = 300
+mask_lby = 400
+
+def getTargetPoint2D(image, bbrtx, bbrty, bblbx, bblby):
+    ROI_img = generateROIImg(gray_image, mask_rtx, mask_rty, mask_lbx, mask_lby) 
+
+    vein_map = get_vein_map(ROI_img)
+    vein_pxls = get_vein(vein_map)   
+    vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, 100)
+    print("vein_line_x: ", vein_line_x)
+    print("vein_line_y: ", vein_line_y)
+    target_point = get_target_point_2d(vein_line_x, vein_line_y)
+
+    print("target_point: ", target_point)
+
+    # draw circles around target point
+    # rr, cc = circle_perimeter(target_point[1], target_point[0], 5)
+    rr, cc = circle_perimeter(target_point[1] + mask_rtx, target_point[0] + mask_rty, 15)
+    
+    # rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
+    print(rr, cc)
+    image_show[rr, cc] = (255, 0, 0)
+    # rgb_ROI_img[rr, cc] = (255, 0, 0)
+
+    return (rr, cc)
+
+
+def getYawAngle(vec1, vec2):
+    line_vec = [vein_line_x[1]-vein_line_x[0], vein_line_y[1]-vein_line_y[0]]
+    x_axis_vec = [0, vein_line_y[1]-vein_line_y[0]]
+    # print(line_vec)
+    # print(x_axis_vec)
+
+    yaw_angle = angle_between(line_vec, x_axis_vec) # in radians 
+    print("yaw angle: ", yaw_angle)
+
+    return yaw_angle
 
 
 
