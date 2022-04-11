@@ -74,7 +74,7 @@ def chain_and_gantry_ik(initial,final):
     print(steps)
     return steps
 
-def serial_to_arduino(port,steps):
+def serial_to_arduino(port,steps,lin_act_dir):
     # Establish Serial
     ser = serial.Serial(port, 115200, timeout=.1)
     time.sleep(1) #give the connection a second to settle
@@ -82,7 +82,10 @@ def serial_to_arduino(port,steps):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
-    ser_input = varx + ',' + vary + ';' + str(angle)
+
+    # lin_act_dir is the direction of the linear actuator and can only be "push" or "pull"
+    # Combine serial
+    ser_input = varx + ',' + vary + ';' + str(angle) + '?' + lin_act_dir
     print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
@@ -92,4 +95,4 @@ def serial_to_arduino(port,steps):
         time.sleep(1)
 
 chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(serial_port,steps)
+serial_to_arduino(serial_port,steps,'push')
