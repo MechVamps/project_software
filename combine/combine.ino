@@ -100,6 +100,10 @@ void loop() {
         delay(500);
 
         // LINEAR ACTUATOR MOVE
+        if(inject.equals('none')){
+          // hopefully prevent actuator going rogue
+          delay(200);
+        }
         if(inject.equals('push')){
           // retracts the actuator
           digitalWrite(IN1_PIN, LOW);

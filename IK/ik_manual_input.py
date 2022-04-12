@@ -14,7 +14,7 @@ import time
 ## Input
 #target = get_target_point_camera_pose()
 target = [55, 50, -306] # where do you want the object to be
-angle = 10 # yaw angle, NEED TO FIX IK FOR THIS
+angle = 10 # yaw angle
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
 test = [55,16.98,-306]
 serial_port = 'COM7'
@@ -109,12 +109,12 @@ def serial_to_arduino(port,steps,lin_act_dir):
 
 # Step 1
 chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(serial_port,steps,'pull')
+serial_to_arduino(serial_port,steps,'none')
 time.sleep(20)
 
 # Step 2
 chain_and_gantry_ik(target,under_skin)
-serial_to_arduino(serial_port,steps,'pull')
+serial_to_arduino(serial_port,steps,'none')
 time.sleep(20)
 
 # Step 3
@@ -122,10 +122,10 @@ chain_and_gantry_ik(under_skin,under_skin)
 serial_to_arduino(serial_port,steps,'push')
 time.sleep(20)
 
-# # Step 4
-# chain_and_gantry_ik(under_skin,target)
-# serial_to_arduino(serial_port,steps,'push')
+# Step 4
+chain_and_gantry_ik(under_skin,target)
+serial_to_arduino(serial_port,steps,'none')
 
 # # Step 5
 # chain_and_gantry_ik(target,init_loc)
-# serial_to_arduino(serial_port,steps,'push')
+# serial_to_arduino(serial_port,steps,'none')
