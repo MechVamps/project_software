@@ -13,9 +13,10 @@ import time
 #################IF THERE IS ANGLE ERROR, IT'S BECAUSE OF THE +90 IN ALL OF THEM
 ## Input
 #target = get_target_point_camera_pose()
-target = [85, 60, -306] # where do you want the object to be
-angle = 30 # yaw angle, NEED TO FIX IK FOR THIS
+target = [55, 50, -306] # where do you want the object to be
+angle = 10 # yaw angle, NEED TO FIX IK FOR THIS
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
+test = [55,16.98,-306]
 serial_port = 'COM7'
 
 ## Variables
@@ -109,14 +110,17 @@ def serial_to_arduino(port,steps,lin_act_dir):
 # Step 1
 chain_and_gantry_ik(init_loc,target)
 serial_to_arduino(serial_port,steps,'pull')
+time.sleep(20)
 
 # Step 2
 chain_and_gantry_ik(target,under_skin)
 serial_to_arduino(serial_port,steps,'pull')
+time.sleep(20)
 
-# # Step 3
-# chain_and_gantry_ik(under_skin,under_skin)
-# serial_to_arduino(serial_port,steps,'push')
+# Step 3
+chain_and_gantry_ik(under_skin,under_skin)
+serial_to_arduino(serial_port,steps,'push')
+time.sleep(20)
 
 # # Step 4
 # chain_and_gantry_ik(under_skin,target)

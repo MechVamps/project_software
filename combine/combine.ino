@@ -6,7 +6,7 @@
 #include <Servo.h>
 
 // SERVO
-int servoPin=42;
+int servoPin=8;
 int reading=0;
 Servo Servo1;
 
@@ -55,7 +55,7 @@ void loop() {
 
         // MOTOR DIRECTION
         if(rotations >= 0){
-          digitalWrite(dirPin, LOW);
+          digitalWrite(dirPin, HIGH);
         }
         if(rotations < 0){
           digitalWrite(dirPin, LOW);
@@ -63,7 +63,7 @@ void loop() {
         }
         
         if(rotations1 >= 0){
-          digitalWrite(dirPin1, LOW);
+          digitalWrite(dirPin1, HIGH);
         }
         if(rotations1 < 0){
           digitalWrite(dirPin1, LOW);
