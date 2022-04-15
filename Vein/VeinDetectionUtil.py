@@ -42,7 +42,7 @@ def get_vein_map(img):
     veins from the skin '''
 
     ns = 10 # median filter blur window 
-    blurred_ROI = skimage.filters.median(ROI_img, selem=np.ones((ns, ns)))
+    blurred_ROI = skimage.filters.median(img, selem=np.ones((ns, ns)))
 
     vein_mask_thresh = 160
     binary_ROI = blurred_ROI < vein_mask_thresh
@@ -144,25 +144,9 @@ def angle_between(v1, v2):
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
-
-# load the image
-image = skimage.io.imread("fake_arm_0.png")
-gray_image = skimage.color.rgb2gray(image)
-
-
-image_show = cv2.imread("fake_arm_0.png")
-image_show = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-
-# working region for current thresholding 
-mask_rtx = 200
-mask_rty = 280
-mask_lbx = 300
-mask_lby = 400
-
-def getTargetPoint2D(image, bbrtx, bbrty, bblbx, bblby):
-    ROI_img = generateROIImg(gray_image, mask_rtx, mask_rty, mask_lbx, mask_lby) 
-
+def getTargetPoint2D(image, bbtlx, bbtly, bbbrx, bbbry):
+    
+    ROI_img = generateROIImg(image, bbtlx, bbtly, bbbrx, bbbry) 
     vein_map = get_vein_map(ROI_img)
     vein_pxls = get_vein(vein_map)   
     vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, 100)
@@ -174,12 +158,18 @@ def getTargetPoint2D(image, bbrtx, bbrty, bblbx, bblby):
 
     # draw circles around target point
     # rr, cc = circle_perimeter(target_point[1], target_point[0], 5)
-    rr, cc = circle_perimeter(target_point[1] + mask_rtx, target_point[0] + mask_rty, 15)
+    rr, cc = circle_perimeter(target_point[1] + bbtlx, target_point[0] + bbtly, 15)
     
     # rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
     print(rr, cc)
-    image_show[rr, cc] = (255, 0, 0)
+    # image_show[rr, cc] = (255, 0, 0)
     # rgb_ROI_img[rr, cc] = (255, 0, 0)
+
+    fig, (ax1, ax2) = plt.subplots(2)
+    ax1.imshow(vein_map, cmap=plt.cm.gray)
+    ax2.imshow(vein_map, cmap=plt.cm.gray)
+    ax2.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+    plt.show()
 
     return (rr, cc)
 
@@ -196,6 +186,23 @@ def getYawAngle(vec1, vec2):
     return yaw_angle
 
 
+if __name__ == "__main__":
+
+    # load the image
+    image = skimage.io.imread("fake_arm_0.png")
+    gray_image = skimage.color.rgb2gray(image)
+
+    image_show = cv2.imread("fake_arm_0.png")
+    image_show = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # working region for current thresholding 
+    mask_rtx = 200
+    mask_rty = 280
+    mask_lbx = 300
+    mask_lby = 400
+
+    getTargetPoint2D(gray_image, mask_rtx, mask_rty, mask_lbx, mask_lby)
+
 
 # # Number of clusters in labels, ignoring noise if present.
 # n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
@@ -206,14 +213,15 @@ def getYawAngle(vec1, vec2):
 
 
 # Display the image and plot all contours found
-fig, ([[ax1, ax2, ax3], [ax4, ax5, ax6]]) = plt.subplots(2, 3)
-ax1.imshow(image_show)
-ax2.imshow(gray_image, cmap=plt.cm.gray)
-# ax2.imshow(blurred_ROI, cmap=plt.cm.gray)
-# ax3.imshow(binary_ROI, cmap=plt.cm.gray)
-ax4.imshow(vein_map, cmap=plt.cm.gray)
-ax5.imshow(vein_map, cmap=plt.cm.gray)
-ax5.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+# fig, ([[ax1, ax2, ax3], [ax4, ax5, ax6]]) = plt.subplots(2, 3)
+# ax1.imshow(image_show)
+# ax2.imshow(gray_image, cmap=plt.cm.gray)
+# # ax2.imshow(blurred_ROI, cmap=plt.cm.gray)
+# # ax3.imshow(binary_ROI, cmap=plt.cm.gray)
+# ax4.imshow(vein_map, cmap=plt.cm.gray)
+# ax5.imshow(vein_map, cmap=plt.cm.gray)
+# ax5.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+# plt.show()
 # ax6.plot(line_x_r, line_y_r, '-k', label='Line model from all data')
 # ax6.imshow(rgb_ROI_img, cmap=plt.cm.gray)
 
@@ -243,4 +251,3 @@ ROI_img = generateROIImg(gray_image, mask_rtr, mask_rtc, mask_lbr, mask_lbc)
 '''
 
 
-plt.show()
