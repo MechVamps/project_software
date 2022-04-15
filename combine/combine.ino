@@ -7,8 +7,9 @@
 
 // SERVO
 int servoPin=8;
-int reading=0;
 Servo Servo1;
+//int end_angle = 0;
+bool servo_moved = false; 
 
 //LINEAR ACTUATOR
 const int ENA_PIN = 40; // the Arduino pin connected to the EN1 pin L298N
@@ -73,17 +74,7 @@ void loop() {
         // SANITY CHECK
         digitalWrite(LED_BUILTIN, HIGH);
 
-        // MOTOR 1 move
-        // Spin the stepper motor revolutions fast:
-        for (int i = 0; i < rotations1 * stepsPerRevolution; i++) {
-          // These four lines result in 1 step:
-          digitalWrite(stepPin, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin, LOW);
-          delayMicroseconds(500);
-        }
-        delay(500);
-
+        
         // MOTOR 2 move
         // Spin the stepper motor revolutions fast:
         for (int i = 0; i < rotations * stepsPerRevolution; i++) {
@@ -95,9 +86,26 @@ void loop() {
         }
         delay(500);
 
-        // SERVO MOVE
-        Servo1.write(end_angle);
+        // MOTOR 1 move
+        // Spin the stepper motor revolutions fast:
+        for (int i = 0; i < rotations1 * stepsPerRevolution; i++) {
+          // These four lines result in 1 step:
+          digitalWrite(stepPin, HIGH);
+          delayMicroseconds(500);
+          digitalWrite(stepPin, LOW);
+          delayMicroseconds(500);
+        }
         delay(500);
+
+
+        // SERVO MOVE
+        /////MAYBE??? it's because i ask it to go to the same angle 5x. Do a 1 time thing
+        
+        if(servo_moved==false){
+          Servo1.write(end_angle);
+          delay(500);
+          servo_moved=true;
+        }
 
         // LINEAR ACTUATOR MOVE
         if(inject.equals('none')){

@@ -1,5 +1,5 @@
 #include <Servo.h>
-int servoPin=42;
+int servoPin=8;
 //int end_angle=180;
 int reading=0;
 Servo Servo1;

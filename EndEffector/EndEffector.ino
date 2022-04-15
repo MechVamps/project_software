@@ -5,6 +5,7 @@ int Led=2;
 int end_angle=30;
 int reading=0;
 Servo Servo1;
+bool servo_moved;
 
 //Linear Actuator
 const int ENA_PIN = 40; // the Arduino pin connected to the EN1 pin L298N
@@ -21,20 +22,27 @@ pinMode(IN1_PIN, OUTPUT);
 pinMode(IN2_PIN, OUTPUT);
 
 digitalWrite(ENA_PIN, HIGH);
+Servo1.write(0);
+delay(500);
 }
 
 void loop(){
 //reading = 500;
 //angle = map(reading, 0, 1023, 0, 180);
-Servo1.write(0);
-digitalWrite(Led, LOW);
-delay(2000);
-Servo1.write(end_angle);
-digitalWrite(Led, HIGH);
-delay(1000);
-digitalWrite(Led, LOW);
 //Servo1.write(0);
-delay(2000);
+//digitalWrite(Led, LOW);
+//delay(2000);
+//Servo1.write(end_angle);
+//digitalWrite(Led, HIGH);
+//delay(1000);
+//digitalWrite(Led, LOW);
+////Servo1.write(0);
+//delay(2000);
+if(servo_moved==false){
+  Servo1.write(end_angle);
+  delay(500);
+  servo_moved=true;
+  }
 
 //Linear Actuator
 // extend the actuator

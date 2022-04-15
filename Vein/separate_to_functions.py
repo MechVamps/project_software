@@ -10,11 +10,11 @@ import serial
 import time
 from RealsenseUtil import get_target_point_camera_pose
 
-#################IF THERE IS ANGLE ERROR, IT'S BECAUSE OF THE +90 IN ALL OF THEM
 ## Input
 target = get_target_point_camera_pose()
-#target = [55, 50, -306] # where do you want the object to be
-angle = 10 # yaw angle
+target = [55, 50, -306] # where do you want the object to be
+angle = 50 # yaw angle
+angle = angle + 90
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
 test = [55,16.98,-306]
 serial_port = 'COM7'
@@ -26,14 +26,19 @@ xlength = 187
 ylength = 254
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [25*math.cos(math.radians(angle+90)),25*math.sin(math.radians(angle+90)),0]
+under_skin = [25*math.cos(math.radians(angle)),25*math.sin(math.radians(angle)),0]
 under_skin = np.add(target,under_skin)
 print(under_skin)
+
+# Establish Serial
+ser = serial.Serial(serial_port, 115200, timeout=.1)
+time.sleep(1) #give the connection a second to settle
+
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
     hypotenuse = 90
-    tran_x = hypotenuse*math.cos(math.radians(angle+90))
-    tran_y = hypotenuse*math.sin(math.radians(angle+90))
+    tran_x = hypotenuse*math.cos(math.radians(angle))
+    tran_y = hypotenuse*math.sin(math.radians(angle))
     tran_z = -23
 
 
@@ -76,27 +81,13 @@ def chain_and_gantry_ik(initial,final):
     steps[0] = (location[1]*xlength)/distance - (location_in[1]*xlength)/distance
     steps[1] = (location[2]*ylength)/distance - (location_in[2]*ylength)/distance
     print(steps)
-
-    # If want to plot
-    # ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
-    # ax.set_xlabel('x')
-    # ax.set_ylabel('y')
-    # ax.set_zlabel('z')
-    # my_chain.plot(location, ax)
-    # matplotlib.pyplot.show()
-
     return steps
 
-def serial_to_arduino(port,steps,lin_act_dir):
-    # Establish Serial
-    ser = serial.Serial(port, 115200, timeout=.1)
-    time.sleep(1) #give the connection a second to settle
-
+def serial_to_arduino(steps,lin_act_dir):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
 
-    # lin_act_dir is the direction of the linear actuator and can only be "push" or "pull"
     # Combine serial
     ser_input = varx + ',' + vary + ';' + str(angle) + '?' + lin_act_dir
     print(ser_input)
@@ -109,13 +100,13 @@ def serial_to_arduino(port,steps,lin_act_dir):
 
 # Step 1
 chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(serial_port,steps,'none')
+serial_to_arduino(steps,'pull')
 time.sleep(20)
 
 # Step 2
 chain_and_gantry_ik(target,under_skin)
 serial_to_arduino(serial_port,steps,'none')
-time.sleep(20)
+time.sleep(10)
 
 # Step 3
 chain_and_gantry_ik(under_skin,under_skin)
@@ -125,7 +116,9 @@ time.sleep(20)
 # Step 4
 chain_and_gantry_ik(under_skin,target)
 serial_to_arduino(serial_port,steps,'none')
+time.sleep(20)
 
-# # Step 5
-# chain_and_gantry_ik(target,init_loc)
-# serial_to_arduino(serial_port,steps,'none')
+# Step 5
+chain_and_gantry_ik(target,init_loc)
+serial_to_arduino(serial_port,steps,'none')
+time.sleep(20)
