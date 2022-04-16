@@ -13,17 +13,16 @@ import time
 ## Input
 #target = get_target_point_camera_pose()
 target = [55, 50, -306] # where do you want the object to be
-angle = 30 # yaw angle
-angle = angle + 90
+angle = 0 # yaw angle
+angle = angle + 90 +65
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
-test = [55,16.98,-306]
 serial_port = 'COM7'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 187
-ylength = 254
+xlength = 127
+ylength = 195
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
 under_skin = [25*math.cos(math.radians(angle)),25*math.sin(math.radians(angle)),0]
@@ -36,10 +35,10 @@ time.sleep(1) #give the connection a second to settle
 
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
-    hypotenuse = 90
+    hypotenuse = 80
     tran_x = hypotenuse*math.cos(math.radians(angle))
     tran_y = hypotenuse*math.sin(math.radians(angle))
-    tran_z = -23
+    tran_z = -17
 
 
     ## Define Chain
@@ -98,27 +97,39 @@ def serial_to_arduino(steps,lin_act_dir):
        ser.write(ser_input)
        time.sleep(1)
 
-# Step 1
-chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(steps,'pull')
-time.sleep(20)
+# Step test
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'push')
+# time.sleep(3)
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(3)
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(3)
 
-# Step 2
-chain_and_gantry_ik(target,under_skin)
-serial_to_arduino(steps,'none')
-time.sleep(10)
 
-# Step 3
-chain_and_gantry_ik(under_skin,under_skin)
-serial_to_arduino(steps,'push')
-time.sleep(20)
-
-# Step 4
-chain_and_gantry_ik(under_skin,target)
+# # Step 1
+chain_and_gantry_ik(init_loc,init_loc)
 serial_to_arduino(steps,'none')
 time.sleep(20)
 
-# Step 5
-chain_and_gantry_ik(target,init_loc)
-serial_to_arduino(steps,'none')
-time.sleep(20)
+# # Step 2
+# chain_and_gantry_ik(target,under_skin)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
+
+# # Step 3
+# chain_and_gantry_ik(under_skin,under_skin)
+# serial_to_arduino(steps,'push')
+# time.sleep(20)
+
+# # Step 4
+# chain_and_gantry_ik(under_skin,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(20)
+
+# # Step 5
+# chain_and_gantry_ik(target,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(20)

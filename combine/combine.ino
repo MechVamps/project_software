@@ -10,6 +10,7 @@ int servoPin=8;
 Servo Servo1;
 //int end_angle = 0;
 bool servo_moved = false; 
+bool act_moved = false;
 
 //LINEAR ACTUATOR
 const int ENA_PIN = 40; // the Arduino pin connected to the EN1 pin L298N
@@ -32,7 +33,7 @@ void setup() {
   pinMode(IN1_PIN, OUTPUT);
   pinMode(IN2_PIN, OUTPUT);
   digitalWrite(ENA_PIN, HIGH); //Driver output pin. On driver it's ENCA
-
+  delay(500);
   // Sanity check LED
   pinMode(LED_BUILTIN, OUTPUT);
 }
@@ -48,7 +49,7 @@ void loop() {
         String x = a.substring(0, commaIndex);
         String y = a.substring(commaIndex + 1, secondCommaIndex);
         String angle = a.substring(secondCommaIndex + 1, thirdCommaIndex);
-        String inject = a.substring(thirdCommaIndex);
+        String inject = a.substring(thirdCommaIndex + 1);
 
         int rotations = x.toInt();
         int rotations1 = y.toInt();
@@ -77,14 +78,14 @@ void loop() {
         
         // MOTOR 2 move
         // Spin the stepper motor revolutions fast:
-        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
-          // These four lines result in 1 step:
-          digitalWrite(stepPin1, HIGH);
-          delayMicroseconds(500);
-          digitalWrite(stepPin1, LOW);
-          delayMicroseconds(500);
-        }
-        delay(500);
+//        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
+//          // These four lines result in 1 step:
+//          digitalWrite(stepPin1, HIGH);
+//          delayMicroseconds(500);
+//          digitalWrite(stepPin1, LOW);
+//          delayMicroseconds(500);
+//        }
+//        delay(500);
 
         // MOTOR 1 move
         // Spin the stepper motor revolutions fast:
@@ -99,31 +100,22 @@ void loop() {
 
 
         // SERVO MOVE
-        /////MAYBE??? it's because i ask it to go to the same angle 5x. Do a 1 time thing
-        
         if(servo_moved==false){
           Servo1.write(end_angle);
           delay(500);
           servo_moved=true;
         }
 
-        // LINEAR ACTUATOR MOVE
-        if(inject.equals('none')){
-          // hopefully prevent actuator going rogue
-          delay(200);
-        }
-        if(inject.equals('push')){
-          // retracts the actuator
-          digitalWrite(IN1_PIN, LOW);
-          digitalWrite(IN2_PIN, HIGH);
-          delay(500);
-        }
-        if(inject.equals('pull')){
-          // extend the actuator
-          digitalWrite(IN1_PIN, HIGH);
-          digitalWrite(IN2_PIN, LOW);
-          delay(500);
-        }
+//         //LINEAR ACTUATOR MOVE
+//        if(inject == 'push'){
+//          // retracts the actuator
+//          digitalWrite(IN1_PIN, LOW);
+//          digitalWrite(IN2_PIN, HIGH);
+//          delay(1000);
+//        }
+//        else{
+//          
+//        }
         // SANITY CHECK
         digitalWrite(LED_BUILTIN, LOW);
     }
