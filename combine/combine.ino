@@ -78,14 +78,14 @@ void loop() {
         
         // MOTOR 2 move
         // Spin the stepper motor revolutions fast:
-//        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
-//          // These four lines result in 1 step:
-//          digitalWrite(stepPin1, HIGH);
-//          delayMicroseconds(500);
-//          digitalWrite(stepPin1, LOW);
-//          delayMicroseconds(500);
-//        }
-//        delay(500);
+        for (int i = 0; i < rotations * stepsPerRevolution; i++) {
+          // These four lines result in 1 step:
+          digitalWrite(stepPin1, HIGH);
+          delayMicroseconds(500);
+          digitalWrite(stepPin1, LOW);
+          delayMicroseconds(500);
+        }
+        delay(500);
 
         // MOTOR 1 move
         // Spin the stepper motor revolutions fast:
@@ -106,16 +106,16 @@ void loop() {
           servo_moved=true;
         }
 
-//         //LINEAR ACTUATOR MOVE
-//        if(inject == 'push'){
-//          // retracts the actuator
-//          digitalWrite(IN1_PIN, LOW);
-//          digitalWrite(IN2_PIN, HIGH);
-//          delay(1000);
-//        }
-//        else{
-//          
-//        }
+         //LINEAR ACTUATOR MOVE
+        if(inject == 'push'){
+          // retracts the actuator
+          digitalWrite(IN1_PIN, LOW);
+          digitalWrite(IN2_PIN, HIGH);
+          delay(1000);
+        }
+        else{
+          
+        }
         // SANITY CHECK
         digitalWrite(LED_BUILTIN, LOW);
     }

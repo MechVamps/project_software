@@ -13,19 +13,19 @@ import time
 ## Input
 #target = get_target_point_camera_pose()
 target = [55, 50, -306] # where do you want the object to be
-angle = 0 # yaw angle
-angle = angle + 90 +65
+angleo = 0 # yaw angle
+angle = angleo + 90 +65
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
 serial_port = 'COM7'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 127
+xlength = 145
 ylength = 195
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [25*math.cos(math.radians(angle)),25*math.sin(math.radians(angle)),0]
+under_skin = [10*math.cos(math.radians(angleo)),10*math.sin(math.radians(angleo)),0]
 under_skin = np.add(target,under_skin)
 print(under_skin)
 
@@ -35,10 +35,10 @@ time.sleep(1) #give the connection a second to settle
 
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
-    hypotenuse = 80
+    hypotenuse = 90
     tran_x = hypotenuse*math.cos(math.radians(angle))
     tran_y = hypotenuse*math.sin(math.radians(angle))
-    tran_z = -17
+    tran_z = -23
 
 
     ## Define Chain
@@ -110,7 +110,7 @@ def serial_to_arduino(steps,lin_act_dir):
 
 
 # # Step 1
-chain_and_gantry_ik(init_loc,init_loc)
+chain_and_gantry_ik(init_loc,target)
 serial_to_arduino(steps,'none')
 time.sleep(20)
 

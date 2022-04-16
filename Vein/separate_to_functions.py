@@ -13,8 +13,8 @@ from RealsenseUtil import get_target_point_camera_pose
 ## Input
 target = get_target_point_camera_pose()
 #target = [55, 50, -306] # where do you want the object to be
-angle = 50 # yaw angle
-angle = angle + 90
+angleo = 0 # yaw angle
+angle = angleo + 90+65
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
 test = [55,16.98,-306]
 serial_port = 'COM7'
@@ -22,11 +22,11 @@ serial_port = 'COM7'
 ## Variables
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 187
-ylength = 254
+xlength = 145
+ylength = 195#254
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [25*math.cos(math.radians(angle)),25*math.sin(math.radians(angle)),0]
+under_skin = [10*math.cos(math.radians(angleo)),10*math.sin(math.radians(angleo)),0]
 under_skin = np.add(target,under_skin)
 print(under_skin)
 
@@ -105,20 +105,20 @@ time.sleep(20)
 
 # Step 2
 chain_and_gantry_ik(target,under_skin)
-serial_to_arduino(serial_port,steps,'none')
+serial_to_arduino(steps,'none')
 time.sleep(10)
 
 # Step 3
 chain_and_gantry_ik(under_skin,under_skin)
-serial_to_arduino(serial_port,steps,'push')
+serial_to_arduino(steps,'push')
 time.sleep(20)
 
 # Step 4
 chain_and_gantry_ik(under_skin,target)
-serial_to_arduino(serial_port,steps,'none')
+serial_to_arduino(steps,'none')
 time.sleep(20)
 
 # Step 5
 chain_and_gantry_ik(target,init_loc)
-serial_to_arduino(serial_port,steps,'none')
+serial_to_arduino(steps,'none')
 time.sleep(20)
