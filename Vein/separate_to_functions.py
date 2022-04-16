@@ -12,7 +12,7 @@ from RealsenseUtil import get_target_point_camera_pose
 
 ## Input
 target = get_target_point_camera_pose()
-target = [55, 50, -306] # where do you want the object to be
+#target = [55, 50, -306] # where do you want the object to be
 angle = 50 # yaw angle
 angle = angle + 90
 init_loc = [30.9,16.98,-306] # where is the object at the start of this
