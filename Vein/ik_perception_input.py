@@ -12,21 +12,20 @@ from RealsenseUtil import get_target_point_camera_pose
 
 ## Input
 target = get_target_point_camera_pose()
-#target = [55, 50, -306] # where do you want the object to be
-angleo = 0 # yaw angle
-angle = angleo + 90+65
-init_loc = [30.9,16.98,-306] # where is the object at the start of this
-test = [55,16.98,-306]
+#target = [128,20,-304] # where do you want the object to be
+angle = 0 # yaw angle
+init_loc = [128,20,-304] # At start, this is where it is
+gantry_origin = [7.5,5.6,-304]
 serial_port = 'COM7'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
-xlength = 145
-ylength = 195#254
+xlength = 161
+ylength = 199
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [10*math.cos(math.radians(angleo)),10*math.sin(math.radians(angleo)),0]
+under_skin = [10*math.cos(math.radians(angle)),10*math.sin(math.radians(angle)),0]
 under_skin = np.add(target,under_skin)
 print(under_skin)
 
@@ -36,10 +35,10 @@ time.sleep(1) #give the connection a second to settle
 
 def chain_and_gantry_ik(initial,final):
     ## Calculate end effector coordinates from givens
-    hypotenuse = 90
+    hypotenuse = 120.5
     tran_x = hypotenuse*math.cos(math.radians(angle))
     tran_y = hypotenuse*math.sin(math.radians(angle))
-    tran_z = -23
+    tran_z = -68
 
 
     ## Define Chain
@@ -61,7 +60,7 @@ def chain_and_gantry_ik(initial,final):
         ),
         URDFLink(
             name="gantry_to_preneedle",
-            origin_translation=[30.9,16.98,-283],
+            origin_translation=[7.5,5.6 + 14.4,-236],
             origin_orientation=[0, 0, 0],
             translation=[0,0,0],
             joint_type='prismatic'
@@ -87,9 +86,10 @@ def serial_to_arduino(steps,lin_act_dir):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
+    ard_angle = angle + 90 -65
 
     # Combine serial
-    ser_input = varx + ',' + vary + ';' + str(angle) + '?' + lin_act_dir
+    ser_input = varx + ',' + vary + ';' + str(ard_angle) + '?' + lin_act_dir
     print(ser_input)
 
     ser_input = bytes(ser_input, encoding="ascii")
@@ -98,9 +98,21 @@ def serial_to_arduino(steps,lin_act_dir):
        ser.write(ser_input)
        time.sleep(1)
 
-# Step 1
+# Step test
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'push')
+# time.sleep(3)
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(3)
+# chain_and_gantry_ik(init_loc,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(3)
+
+
+# # Step 1
 chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(steps,'pull')
+serial_to_arduino(steps,'none')
 time.sleep(20)
 
 # Step 2
