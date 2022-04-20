@@ -35,6 +35,10 @@ void setup() {
   digitalWrite(ENA_PIN, HIGH); //Driver output pin. On driver it's ENCA
   delay(500);
   // Sanity check LED
+
+  Servo1.write(25);
+  delay(100);
+  
   pinMode(LED_BUILTIN, OUTPUT);
 }
 void loop() {

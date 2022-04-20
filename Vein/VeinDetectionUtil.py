@@ -119,9 +119,12 @@ def get_target_point_2d(vein_cx, vein_cy):
 #     return 0 
 
 
-# def get_target_point_robot_pose(camera_target_pt):
-#     # TODO: calculate transformation matrix  
-#     return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+def get_target_point_robot_pose(camera_target_pt):
+    # TODO: calculate transformation matrix
+    R = [[-1,0,0],[0,-1,0],[0,0,1]]
+    p = camera_target_pt
+    T = [[R,p],[0,0,0,1]]
+    return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
 
 def unit_vector(vector):
