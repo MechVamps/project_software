@@ -6,21 +6,21 @@ import time
 from VeinDetectionUtil import getTargetPoint2D, getYawAngle
 
 class RealsenseUtil():
-    def init(self):
+    # def init(self):
         # Set ROI bounding box top left(bbtl[x/y]) and bottom right(bbbr[x/y]) corners 
-        self.bbtlx = 200
-        self.bbtly = 280
-        self.bbbrx = 300
-        self.bbbry = 400
+        # self.bbtlx = 200
+        # self.bbtly = 280
+        # self.bbbrx = 300
+        # self.bbbry = 400
 
     def get_target_point_camera_pose(self):
         target_point_camera_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         # Set ROI bounding box top left(bbtl[x/y]) and bottom right(bbbr[x/y]) corners 
-        bbtlx = 200
-        bbtly = 280
-        bbbrx = 300
-        bbbry = 400
+        mask_rty = 140
+        mask_rtx = 500
+        mask_lby = 670
+        mask_lbx = 1000
 
         # Configure IR stream
         pipeline = rs.pipeline()
@@ -60,20 +60,19 @@ class RealsenseUtil():
                 # IR_image = np.array(infrared_frame.get_data())
 
                 # # TODO: get target point from the detection pipeline
-                cont = input()
-                if cont == "y":
-                    cv2.imwrite("arm_" + str(count) + ".png", gray_image)
+                # if input("continue image processing") == "y":
+                #     cv2.imwrite("arm_" + str(count) + ".png", gray_image)
 
-                    # print("target_point: ", target_point)
-
-                # target_point = getTargetPoint2D(color_image, bbtlx, bbtly, bbbrx, bbbry)
-                depth = 9
-                target_point = [187, 342]
+                input("enter to cont.")
+                target_point = getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
+                print("target_point: ", target_point)
+                depth = depth_frame.get_distance(target_point[0], target_point[1])
+                print("depth: ", depth)
+                # target_point = [187, 342]
 
                 # align color and depth image
-
                 align = rs.align(rs.stream.color)
-                aligned_frames = align.proccess(frames)
+                aligned_frames = align.process(frames)
                 color_frame = aligned_frames.first(rs.stream.color)
                 aligned_depth_frame = aligned_frames.get_depth_frame()
 
