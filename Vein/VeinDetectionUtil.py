@@ -31,32 +31,37 @@ def generateROIImg(img, r1, c1, r2, c2):
     return mask 
 
 
-# TODO: test with better lighting and less noise again 
-def get_image_from_stream():
-    ''' Capture RGB image from realsense RGB stream '''
-    return True  
-
-
-def get_vein_map(img):
+def getBinaryROIImg(roi):
     ''' Use image processing(smooth, thresholding and clustering) to segment the 
     veins from the skin '''
+    ns = 5 # median filter blur window 
+    blurred_ROI = skimage.filters.median(roi, selem=np.ones((ns, ns)))
+    
+    hi_contr_ROI = np.clip(1.4*blurred_ROI, 0, 255)
+    vein_mask_thresh = 210
+    binary_ROI = hi_contr_ROI < vein_mask_thresh
 
-    ns = 10 # median filter blur window 
-    blurred_ROI = skimage.filters.median(img, selem=np.ones((ns, ns)))
+    # footprint = disk(6)
+    # eroded = erosion(binary_ROI, footprint)
 
-    vein_mask_thresh = 160
-    binary_ROI = blurred_ROI < vein_mask_thresh
-
-    # apply DBscan clustering on selected ROI
+    fig, [ax1, ax2, ax3] = plt.subplots(3)
+    ax1.imshow(hi_contr_ROI)
+    ax2.imshow(binary_ROI)
+    # ax3.imshow(eroded)
+    plt.plot
     masked_ROI = blurred_ROI * binary_ROI 
+    return masked_ROI
+
+def get_vein_map(masked_ROI):
+    ''' Use DBscan clustering to cluster the vein pixels'''
     indices = np.dstack(np.indices(masked_ROI.shape))
     indices_flat = np.reshape(indices, [-1,2])
     masked_ROI_flat = np.reshape(masked_ROI, [-1,1])
     xy_pixels = np.hstack((masked_ROI_flat, indices_flat))
 
-    db = DBSCAN(eps=10, min_samples=100, metric = 'euclidean',algorithm ='auto').fit(xy_pixels) 
+    db = DBSCAN(eps=10, min_samples=200, metric = 'euclidean',algorithm ='auto').fit(xy_pixels) 
     core_coord = np.unravel_index(db.core_sample_indices_, masked_ROI.shape)
-    cluster_map = img_as_float(np.zeros_like(blurred_ROI))
+    cluster_map = img_as_float(np.zeros_like(masked_ROI))
     labels = db.labels_
 
     # detected clusters are represented by labels
@@ -69,8 +74,10 @@ def get_vein(vein_map):
     ''' Return an arrays of pixels indices of the biggest vein on 
     the segmented vein_map 
     '''
+    # TODO: make vein selection more robust 
     # vein_map == 1 is the biggest vein cluster (0 is always the skin background)
-    idx_array_tuple = np.where(vein_map==1)
+    # idx_array_tuple = np.where(vein_map==1)
+    idx_array_tuple = np.where(vein_map==7)
     x = np.array(idx_array_tuple[1])
     y = np.array(idx_array_tuple[0])
     idx_array = np.column_stack([x, y])
@@ -83,7 +90,7 @@ def get_center_vein_line(vein, img_max_row):
     model = LineModelND()
     model.estimate(vein)
     # generate coordinates of estimated models
-    line_x = np.arange(0, 120)
+    line_x = np.arange(0, 500)
     line_y = model.predict_y(line_x)
 
     # get the line within the image frame 
@@ -147,34 +154,42 @@ def angle_between(v1, v2):
     return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
-def getTargetPoint2D(image, bbtlx, bbtly, bbbrx, bbbry):
+def getTargetPoint2D(image, bbtlr, bbtlc, bbbrr, bbbrc):
     
-    ROI_img = generateROIImg(image, bbtlx, bbtly, bbbrx, bbbry) 
-    vein_map = get_vein_map(ROI_img)
-    vein_pxls = get_vein(vein_map)   
-    vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, 100)
-    print("vein_line_x: ", vein_line_x)
-    print("vein_line_y: ", vein_line_y)
-    target_point = get_target_point_2d(vein_line_x, vein_line_y)
-
-    print("target_point: ", target_point)
-
-    # draw circles around target point
-    # rr, cc = circle_perimeter(target_point[1], target_point[0], 5)
-    rr, cc = circle_perimeter(target_point[1] + bbtlx, target_point[0] + bbtly, 15)
-    
-    # rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
-    print(rr, cc)
-    # image_show[rr, cc] = (255, 0, 0)
-    # rgb_ROI_img[rr, cc] = (255, 0, 0)
+    ROI_img = generateROIImg(image, bbtlr, bbtlc, bbbrr, bbbrc) 
+    binary_roi = getBinaryROIImg(ROI_img)
 
     fig, (ax1, ax2) = plt.subplots(2)
-    ax1.imshow(vein_map, cmap=plt.cm.gray)
-    ax2.imshow(vein_map, cmap=plt.cm.gray)
-    ax2.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+    ax1.imshow(image, cmap=plt.cm.gray)
+    ax2.imshow(ROI_img, cmap=plt.cm.gray)
+    plt.show()
+    vein_map = get_vein_map(binary_roi)
+    vein_pxls = get_vein(vein_map)   
+    # print(vein_pxls)
+    fig, (ax1, ax2) = plt.subplots(2)
+    ax1.imshow(vein_map)
+    print(vein_map.shape[0])
+    vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, vein_map.shape[0])
+    # print("vein_line_x: ", vein_line_x)
+    # print("vein_line_y: ", vein_line_y)
+
+    ax1.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+    target_point = get_target_point_2d(vein_line_x, vein_line_y)
+    print("target_point: ", target_point)
+    ax1.plot(target_point[0], target_point[1], 'o', markersize=7)
+
+    # draw circles around target point
+    rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
+    ax2.imshow(image, cmap=plt.cm.gray)
+    pt = (target_point[0]+bbtlc, target_point[1]+bbtlr)
+    ax2.plot(pt[0], pt[1], 'o', markersize=7)
+
     plt.show()
 
-    return (rr, cc)
+    if input("enter \'n\' to return 0,0 ") == 'n':
+        return (0, 0)
+
+    return pt
 
 
 def getYawAngle(vec1, vec2):
@@ -192,19 +207,19 @@ def getYawAngle(vec1, vec2):
 if __name__ == "__main__":
 
     # load the image
-    image = skimage.io.imread("fake_arm_0.png")
+    image = skimage.io.imread("arm_88.png")
     gray_image = skimage.color.rgb2gray(image)
 
-    image_show = cv2.imread("fake_arm_0.png")
+    image_show = cv2.imread("arm_88.png")
     image_show = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     # working region for current thresholding 
-    mask_rtx = 200
-    mask_rty = 280
-    mask_lbx = 300
-    mask_lby = 400
+    mask_rty = 140
+    mask_rtx = 500
+    mask_lby = 670
+    mask_lbx = 1000
 
-    getTargetPoint2D(gray_image, mask_rtx, mask_rty, mask_lbx, mask_lby)
+    getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
 
 
 # # Number of clusters in labels, ignoring noise if present.
