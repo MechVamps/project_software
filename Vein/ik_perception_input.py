@@ -13,10 +13,10 @@ from RealsenseUtil import get_target_point_camera_pose
 ## Input
 target = get_target_point_camera_pose()
 origin = [128,20,-304]
-#target = [138,30,-304] # where do you want the object to be
+#target = [178,30,-304] # where do you want the object to be
 angle = 10 # yaw angle
-init_loc = [128,20,-304] # At start, this is where it is
-gantry_origin = [7.5,5.6,-304]
+init_loc = [158,20,-304] # At start, this is where it is
+#gantry_origin = [7.5,5.6,-304]
 serial_port = 'COM7'
 
 ## Variables
