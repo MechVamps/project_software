@@ -15,7 +15,7 @@ import time
 origin = [128,20,-304]
 target = [178,30,-304] # where do you want the object to be
 angle = 10 # yaw angle
-init_loc = [158,20,-304] # At start, this is where it is
+init_loc = [128,50,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
 serial_port = 'COM7'
 
