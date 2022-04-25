@@ -37,8 +37,11 @@ def getBinaryROIImg(roi):
     ns = 5 # median filter blur window 
     blurred_ROI = skimage.filters.median(roi, selem=np.ones((ns, ns)))
     
-    hi_contr_ROI = np.clip(1.4*blurred_ROI, 0, 255)
-    vein_mask_thresh = 210
+    # TODO: make contrast ratio a parameter
+    hi_contr_ROI = np.clip(1.1*blurred_ROI, 0, 255)
+    vein_mask_thresh = 190
+    # binary_ROI = blurred_ROI < vein_mask_thresh
+    # binary_ROI = binary_ROI > 170
     binary_ROI = hi_contr_ROI < vein_mask_thresh
 
     # footprint = disk(6)
@@ -163,6 +166,7 @@ def getTargetPoint2D(image, bbtlr, bbtlc, bbbrr, bbbrc):
     ax1.imshow(image, cmap=plt.cm.gray)
     ax2.imshow(ROI_img, cmap=plt.cm.gray)
     plt.show()
+    # vein_map = get_vein_map(ROI_img)
     vein_map = get_vein_map(binary_roi)
     vein_pxls = get_vein(vein_map)   
     # print(vein_pxls)

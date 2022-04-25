@@ -17,10 +17,10 @@ class RealsenseUtil():
         target_point_camera_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         # Set ROI bounding box top left(bbtl[x/y]) and bottom right(bbbr[x/y]) corners 
-        mask_rty = 140
-        mask_rtx = 500
-        mask_lby = 670
-        mask_lbx = 1000
+        mask_rty = 300
+        mask_rtx = 600
+        mask_lby = 580
+        mask_lbx = 890
 
         # Configure IR stream
         pipeline = rs.pipeline()
