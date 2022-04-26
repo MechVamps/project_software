@@ -199,8 +199,8 @@ def getTargetPoint2D(image, bbtlr, bbtlc, bbbrr, bbbrc):
 
     plt.show()
 
-    if input("enter \'n\' to return 0,0 ") == 'n':
-        return (0, 0)
+    # if input("enter \'n\' to return 0,0 ") == 'n':
+        # return (0, 0)
 
     return pt
 

@@ -1,3 +1,4 @@
+from ctypes.wintypes import tagMSG
 from tkinter import Y
 from ikpy.chain import Chain
 from ikpy.link import OriginLink,URDFLink
@@ -8,13 +9,15 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import serial
 import time
-from RealsenseUtil import get_camera_to_robot_tf_matrix
+from RealsenseUtil import get_target_point_camera_pose
 
 ## Input
-tf_matrix_to_target = get_camera_to_robot_tf_matrix()
+tf_matrix_to_target = get_target_point_camera_pose()
 origin = [128,20,-304]
 #target = [178,30,-304] 
 target = np.asarray([[1,0,0,origin[0]], [0, 1, 0, origin[1]], [0, 0, 1, origin[2]], [0, 0, 0, 1]]) @ tf_matrix_to_target # translation from needle point to camera center 
+target = [target[0, 3], target[1, 3], target[2, 3]]
+print("target point for ik: ", target)
 # where do you want the object to be
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
@@ -25,7 +28,7 @@ serial_port = 'COM7'
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
 xlength = 161
-ylength = 199
+ylength = 117
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
 under_skin = [10*math.sin(math.radians(angle)),10*math.cos(math.radians(angle)),0]
@@ -106,22 +109,22 @@ chain_and_gantry_ik(init_loc,target)
 serial_to_arduino(steps,'none')
 time.sleep(20)
 
-# Step 2
-chain_and_gantry_ik(target,under_skin)
-serial_to_arduino(steps,'none')
-time.sleep(10)
+# # Step 2
+# chain_and_gantry_ik(target,under_skin)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
 
-# Step 3
-chain_and_gantry_ik(under_skin,under_skin)
-serial_to_arduino(steps,'push')
-time.sleep(10)
+# # Step 3
+# chain_and_gantry_ik(under_skin,under_skin)
+# serial_to_arduino(steps,'push')
+# time.sleep(10)
 
-# Step 4
-chain_and_gantry_ik(under_skin,target)
-serial_to_arduino(steps,'none')
-time.sleep(10)
+# # Step 4
+# chain_and_gantry_ik(under_skin,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
 
-# Step 5
-chain_and_gantry_ik(target,init_loc)
-serial_to_arduino(steps,'none')
-time.sleep(20)
+# # Step 5
+# chain_and_gantry_ik(target,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(20)

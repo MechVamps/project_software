@@ -99,37 +99,37 @@ def serial_to_arduino(steps,lin_act_dir):
        ser.write(ser_input)
        time.sleep(1)
 
-# # Step test
-# chain_and_gantry_ik(origin,init_loc)
-# serial_to_arduino(steps,'none')
-# time.sleep(15)
+# Step test
+chain_and_gantry_ik(origin,init_loc)
+serial_to_arduino(steps,'none')
+time.sleep(15)
 
 # chain_and_gantry_ik(under_skin,target)
 # serial_to_arduino(steps,'none')
 # time.sleep(10)
 
 
-# Step 1
-chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(steps,'none')
-time.sleep(20)
+# # Step 1
+# chain_and_gantry_ik(init_loc,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(20)
 
-# Step 2
-chain_and_gantry_ik(target,under_skin)
-serial_to_arduino(steps,'none')
-time.sleep(10)
+# # Step 2
+# chain_and_gantry_ik(target,under_skin)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
 
-# Step 3
-chain_and_gantry_ik(under_skin,under_skin)
-serial_to_arduino(steps,'push')
-time.sleep(10)
+# # Step 3
+# chain_and_gantry_ik(under_skin,under_skin)
+# serial_to_arduino(steps,'push')
+# time.sleep(10)
 
-# Step 4
-chain_and_gantry_ik(under_skin,target)
-serial_to_arduino(steps,'none')
-time.sleep(10)
+# # Step 4
+# chain_and_gantry_ik(under_skin,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
 
-# Step 5
-chain_and_gantry_ik(target,init_loc)
-serial_to_arduino(steps,'none')
-time.sleep(20)
+# # Step 5
+# chain_and_gantry_ik(target,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(20)
