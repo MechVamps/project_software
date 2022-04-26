@@ -14,8 +14,8 @@ import time
 #target = get_target_point_camera_pose()
 origin = [128,20,-304]
 target = [178,30,-304] # where do you want the object to be
-angle = 10 # yaw angle
-init_loc = [128,50,-304] # At start, this is where it is
+angle = 0 # yaw angle
+init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
 serial_port = 'COM7'
 
@@ -87,7 +87,7 @@ def serial_to_arduino(steps,lin_act_dir):
     # Convert to str
     varx = str(int(steps[0]))
     vary = str(int(steps[1]))
-    ard_angle = angle + 90 -65
+    ard_angle = angle + 90 + 65
 
     # Combine serial
     ser_input = varx + ',' + vary + ';' + str(ard_angle) + '?' + lin_act_dir
@@ -101,7 +101,7 @@ def serial_to_arduino(steps,lin_act_dir):
 
 # Step test
 # Step 1
-chain_and_gantry_ik(origin,init_loc)
+chain_and_gantry_ik(origin,origin)
 serial_to_arduino(steps,'none')
 time.sleep(15)
 

@@ -8,17 +8,16 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import serial
 import time
-# from RealsenseUtil import get_target_point_camera_pose
+from RealsenseUtil import get_target_point_camera_pose
 
 ## Input
-# target = get_target_point_camera_pose()
+target = get_target_point_camera_pose()
 origin = [128,20,-304]
-target = [178,30,-304] # where do you want the object to be
+#target = [178,30,-304] # where do you want the object to be
 angle = 10 # yaw angle
 init_loc = [128,50,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-# serial_port = 'COM7'
-serial_port = "/dev/ttyACM0"
+serial_port = 'COM7'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
