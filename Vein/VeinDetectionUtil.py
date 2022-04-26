@@ -131,10 +131,19 @@ def get_target_point_2d(vein_cx, vein_cy):
 
 def get_target_point_robot_pose(camera_target_pt):
     # TODO: calculate transformation matrix
-    R = [[-1,0,0],[0,-1,0],[0,0,1]]
-    p = camera_target_pt
-    T = [[R,p],[0,0,0,1]]
-    return [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    dist_n2c = [6, 5, 28]
+    Trans_n2c = np.asarray([[1,0,0,dist_n2c[0]], [0, 1, 0, dist_n2c[1]], [0, 0, 1, dist_n2c[2]], [0, 0, 0, 1]]) # translation from needle point to camera center 
+    Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
+    Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 
+    Trans_c2i = np.asarray([[1, 0, 0, camera_target_pt[0]], [0, 1, 0, camera_target_pt[1]], [0, 0, 1, camera_target_pt[2]], [0, 0, 0, 1]]) # translation from camera center to target point
+    # yaw_ang = camera_target_pt[3]
+    # Rot_needle_yaw = np.asarray([[np.cos(yaw_ang), -np.sin(yaw_ang), 0],[np.sin(yaw_ang), np.cos(yaw_ang), 0],[0, 0, 1, 0],[0, 0, 0, 1]]) # needle rotation  
+
+    target_pt = Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
+    print("target point coordinate in robot frame is: ", target_pt)
+
+    return target_pt
+    # return Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i @ Rot_needle_yaw
 
 
 def unit_vector(vector):
@@ -223,7 +232,8 @@ if __name__ == "__main__":
     mask_lby = 670
     mask_lbx = 1000
 
-    getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
+    pt2d = getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
+    pt3d = get_target_point_robot_pose(pt2d)
 
 
 # # Number of clusters in labels, ignoring noise if present.

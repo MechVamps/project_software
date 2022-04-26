@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import time
 # import imutils
-from VeinDetectionUtil import getTargetPoint2D, getYawAngle
+from VeinDetectionUtil import getTargetPoint2D, getYawAngle, get_target_point_robot_pose
 
 class RealsenseUtil():
     # def init(self):
@@ -80,7 +80,10 @@ class RealsenseUtil():
                 depth_intrin = depth_frame.profile.as_video_stream_profile().intrinsics           
                 target_point_camera_pose = rs.rs2_deproject_pixel_to_point(
                                 depth_intrin, target_point, depth)
+                target_point_camera_pose = np.dot(target_point_camera_pose, 100) # m to cm
                 print(target_point_camera_pose)
+
+                target_point_robot_pose = get_target_point_robot_pose(target_point_camera_pose)
 
                 # # distance = depth_frame.get_distance(target_point[0], target_point[1])
                 # # cv2.putText(IR_image, "{}m".format(distance), (target_point[0], target_point[1] - 20), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 0), 2)
