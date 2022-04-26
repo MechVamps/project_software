@@ -26,7 +26,7 @@ xlength = 161
 ylength = 199
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
-under_skin = [10*math.cos(math.radians(angle)),10*math.sin(math.radians(angle)),0]
+under_skin = [10*math.sin(math.radians(angle)),10*math.cos(math.radians(angle)),0]
 under_skin = np.add(target,under_skin)
 print(under_skin)
 
@@ -99,39 +99,37 @@ def serial_to_arduino(steps,lin_act_dir):
        ser.write(ser_input)
        time.sleep(1)
 
-# Step test
+# # Step test
+# chain_and_gantry_ik(origin,init_loc)
+# serial_to_arduino(steps,'none')
+# time.sleep(15)
+
+# chain_and_gantry_ik(under_skin,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(10)
+
+
 # Step 1
-chain_and_gantry_ik(origin,origin)
+chain_and_gantry_ik(init_loc,target)
 serial_to_arduino(steps,'none')
-time.sleep(15)
+time.sleep(20)
 
-# # Step 2
-# chain_and_gantry_ik(under_skin,target)
-# serial_to_arduino(steps,'none')
-# time.sleep(10)
+# Step 2
+chain_and_gantry_ik(target,under_skin)
+serial_to_arduino(steps,'none')
+time.sleep(10)
 
+# Step 3
+chain_and_gantry_ik(under_skin,under_skin)
+serial_to_arduino(steps,'push')
+time.sleep(10)
 
-# # Step 1
-# chain_and_gantry_ik(init_loc,target)
-# serial_to_arduino(steps,'none')
-# time.sleep(20)
+# Step 4
+chain_and_gantry_ik(under_skin,target)
+serial_to_arduino(steps,'none')
+time.sleep(10)
 
-# # Step 2
-# chain_and_gantry_ik(target,under_skin)
-# serial_to_arduino(steps,'none')
-# time.sleep(10)
-
-# # Step 3
-# chain_and_gantry_ik(under_skin,under_skin)
-# serial_to_arduino(steps,'push')
-# time.sleep(10)
-
-# # Step 4
-# chain_and_gantry_ik(under_skin,target)
-# serial_to_arduino(steps,'none')
-# time.sleep(10)
-
-# # Step 5
-# chain_and_gantry_ik(target,init_loc)
-# serial_to_arduino(steps,'none')
-# time.sleep(20)
+# Step 5
+chain_and_gantry_ik(target,init_loc)
+serial_to_arduino(steps,'none')
+time.sleep(20)
