@@ -129,20 +129,20 @@ def get_target_point_2d(vein_cx, vein_cy):
 #     return 0 
 
 
-def get_target_point_robot_pose(camera_target_pt):
+def get_camera_to_robot_tf_matrix(camera_target_pt):
     # TODO: calculate transformation matrix
-    dist_n2c = [6, 5, 28]
+    dist_n2c = [60, 50, 280] # distance from needle tip point to camera origin 
     Trans_n2c = np.asarray([[1,0,0,dist_n2c[0]], [0, 1, 0, dist_n2c[1]], [0, 0, 1, dist_n2c[2]], [0, 0, 0, 1]]) # translation from needle point to camera center 
     Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
     Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 
-    Trans_c2i = np.asarray([[1, 0, 0, camera_target_pt[0]], [0, 1, 0, camera_target_pt[1]], [0, 0, 1, camera_target_pt[2]], [0, 0, 0, 1]]) # translation from camera center to target point
+    Trans_c2i = np.asarray([[1, 0, 0, camera_target_pt[0]], [0, 1, 0, camera_target_pt[1]], [0, 0, 1, camera_target_pt[2]], [0, 0, 0, 1]]) # translation from camera center to target insertion point
     # yaw_ang = camera_target_pt[3]
     # Rot_needle_yaw = np.asarray([[np.cos(yaw_ang), -np.sin(yaw_ang), 0],[np.sin(yaw_ang), np.cos(yaw_ang), 0],[0, 0, 1, 0],[0, 0, 0, 1]]) # needle rotation  
 
-    target_pt = Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
-    print("target point coordinate in robot frame is: ", target_pt)
+    target_tf = Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
+    print("target point coordinate from needle pt is: ", target_tf)
 
-    return target_pt
+    return Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
     # return Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i @ Rot_needle_yaw
 
 
@@ -181,14 +181,14 @@ def getTargetPoint2D(image, bbtlr, bbtlc, bbbrr, bbbrc):
     # print(vein_pxls)
     fig, (ax1, ax2) = plt.subplots(2)
     ax1.imshow(vein_map)
-    print(vein_map.shape[0])
+    # print(vein_map.shape[0])
     vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, vein_map.shape[0])
     # print("vein_line_x: ", vein_line_x)
     # print("vein_line_y: ", vein_line_y)
 
     ax1.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
     target_point = get_target_point_2d(vein_line_x, vein_line_y)
-    print("target_point: ", target_point)
+    # print("target_point: ", target_point)
     ax1.plot(target_point[0], target_point[1], 'o', markersize=7)
 
     # draw circles around target point
@@ -212,7 +212,7 @@ def getYawAngle(vec1, vec2):
     # print(x_axis_vec)
 
     yaw_angle = angle_between(line_vec, x_axis_vec) # in radians 
-    print("yaw angle: ", yaw_angle)
+    # print("yaw angle: ", yaw_angle)
 
     return yaw_angle
 
@@ -233,7 +233,7 @@ if __name__ == "__main__":
     mask_lbx = 1000
 
     pt2d = getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
-    pt3d = get_target_point_robot_pose(pt2d)
+    # pt3d = get_target_point_robot_pose(pt2d)
 
 
 # # Number of clusters in labels, ignoring noise if present.

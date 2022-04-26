@@ -8,12 +8,14 @@ from mpl_toolkits.mplot3d import Axes3D
 import math
 import serial
 import time
-from RealsenseUtil import get_target_point_camera_pose
+from RealsenseUtil import get_camera_to_robot_tf_matrix
 
 ## Input
-target = get_target_point_camera_pose()
+tf_matrix_to_target = get_camera_to_robot_tf_matrix()
 origin = [128,20,-304]
-#target = [178,30,-304] # where do you want the object to be
+#target = [178,30,-304] 
+target = np.asarray([[1,0,0,origin[0]], [0, 1, 0, origin[1]], [0, 0, 1, origin[2]], [0, 0, 0, 1]]) @ tf_matrix_to_target # translation from needle point to camera center 
+# where do you want the object to be
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]

@@ -80,7 +80,7 @@ class RealsenseUtil():
                 depth_intrin = depth_frame.profile.as_video_stream_profile().intrinsics           
                 target_point_camera_pose = rs.rs2_deproject_pixel_to_point(
                                 depth_intrin, target_point, depth)
-                target_point_camera_pose = np.dot(target_point_camera_pose, 100) # m to cm
+                target_point_camera_pose = np.dot(target_point_camera_pose, 1000) # m to mm
                 print(target_point_camera_pose)
 
                 target_point_robot_pose = get_target_point_robot_pose(target_point_camera_pose)
