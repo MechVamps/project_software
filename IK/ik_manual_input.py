@@ -24,7 +24,7 @@ serial_port =  '/dev/ttyACM0'
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
 xlength = 161
-ylength = 199
+ylength = 117
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
 under_skin = [10*math.sin(math.radians(angle)),10*math.cos(math.radians(angle)),0]
