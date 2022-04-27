@@ -15,7 +15,7 @@ import time
 origin = [128,20,-304]
 target = [178,30,-304] # where do you want the object to be
 angle = 0 # yaw angle
-init_loc = [158,20,-304] # At start, this is where it is
+init_loc = [128,80,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
 serial_port = 'COM7'
 
@@ -23,7 +23,7 @@ serial_port = 'COM7'
 stepsperrev = 200 #200 steps/rev
 distance = 1.27 #mm distance travelled for 1/4-20
 xlength = 161
-ylength = 199
+ylength = 117
 steps = np.zeros((3,1)) #x,y,z
 # Coordinates to go under skin
 under_skin = [10*math.sin(math.radians(angle)),10*math.cos(math.radians(angle)),0]
