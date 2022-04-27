@@ -47,11 +47,10 @@ def getBinaryROIImg(roi):
     # footprint = disk(6)
     # eroded = erosion(binary_ROI, footprint)
 
-    fig, [ax1, ax2, ax3] = plt.subplots(3)
-    ax1.imshow(hi_contr_ROI)
-    ax2.imshow(binary_ROI)
-    # ax3.imshow(eroded)
-    plt.plot
+    # fig, [ax1, ax2] = plt.subplots(2)
+    # ax1.imshow(hi_contr_ROI)
+    # ax2.imshow(binary_ROI)
+    # plt.plot()
     masked_ROI = blurred_ROI * binary_ROI 
     return masked_ROI
 
@@ -131,18 +130,20 @@ def get_target_point_2d(vein_cx, vein_cy):
 
 def get_camera_to_robot_tf_matrix(camera_target_pt):
     # TODO: calculate transformation matrix
-    dist_n2c = [60, 50, 280] # distance from needle tip point to camera origin 
+    dist_n2c = [35, 73, 280] # distance from needle tip point to camera origin 
     Trans_n2c = np.asarray([[1,0,0,dist_n2c[0]], [0, 1, 0, dist_n2c[1]], [0, 0, 1, dist_n2c[2]], [0, 0, 0, 1]]) # translation from needle point to camera center 
-    Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
-    Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 
+    # Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
+    # Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 
     Trans_c2i = np.asarray([[1, 0, 0, camera_target_pt[0]], [0, 1, 0, camera_target_pt[1]], [0, 0, 1, camera_target_pt[2]], [0, 0, 0, 1]]) # translation from camera center to target insertion point
     # yaw_ang = camera_target_pt[3]
     # Rot_needle_yaw = np.asarray([[np.cos(yaw_ang), -np.sin(yaw_ang), 0],[np.sin(yaw_ang), np.cos(yaw_ang), 0],[0, 0, 1, 0],[0, 0, 0, 1]]) # needle rotation  
 
-    target_tf = Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
-    print("target point coordinate from needle pt is: ", target_tf)
+    # target_tf = Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
+    target_tf = Trans_n2c @ Trans_c2i 
+    # print("target point coordinate from needle pt is: ", target_tf)
+    print("The needle should move: \n" + str(np.around(target_tf[0,3], 1)) + "mm in X axis, \n" + str(np.around(target_tf[1, 3],1)) + "mm in Y axis")
 
-    return Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i 
+    return target_tf 
     # return Trans_n2c @ Rot_y @ Rot_z @ Trans_c2i @ Rot_needle_yaw
 
 
@@ -171,31 +172,38 @@ def getTargetPoint2D(image, bbtlr, bbtlc, bbbrr, bbbrc):
     ROI_img = generateROIImg(image, bbtlr, bbtlc, bbbrr, bbbrc) 
     binary_roi = getBinaryROIImg(ROI_img)
 
-    fig, (ax1, ax2) = plt.subplots(2)
-    ax1.imshow(image, cmap=plt.cm.gray)
-    ax2.imshow(ROI_img, cmap=plt.cm.gray)
-    plt.show()
+    fig, axs = plt.subplots(2, 3)
+    axs[0, 0].imshow(image, cmap=plt.cm.gray)
+    axs[0, 0].set_title('original image')
+    axs[0, 1].imshow(ROI_img, cmap=plt.cm.gray)
+    axs[0, 1].set_title('selected ROI')
+    axs[0, 2].imshow(binary_roi, cmap=plt.cm.gray)
+    axs[0, 2].set_title('binary ROI')
+
+    # plt.show()
     # vein_map = get_vein_map(ROI_img)
     vein_map = get_vein_map(binary_roi)
     vein_pxls = get_vein(vein_map)   
     # print(vein_pxls)
-    fig, (ax1, ax2) = plt.subplots(2)
-    ax1.imshow(vein_map)
+    # fig, (ax1, ax2) = plt.subplots(2)
+    axs[1,0].imshow(vein_map)
+    axs[1,0].set_title('segmented vein map')
     # print(vein_map.shape[0])
     vein_line_x, vein_line_y = get_center_vein_line(vein_pxls, vein_map.shape[0])
     # print("vein_line_x: ", vein_line_x)
     # print("vein_line_y: ", vein_line_y)
 
-    ax1.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
+    axs[1,0].plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
     target_point = get_target_point_2d(vein_line_x, vein_line_y)
     # print("target_point: ", target_point)
-    ax1.plot(target_point[0], target_point[1], 'o', markersize=7)
+    axs[1,0].plot(target_point[0], target_point[1], 'o', markersize=7)
 
     # draw circles around target point
     rgb_ROI_img = skimage.color.gray2rgb(ROI_img)
-    ax2.imshow(image, cmap=plt.cm.gray)
+    axs[1,1].imshow(image, cmap=plt.cm.gray)
     pt = (target_point[0]+bbtlc, target_point[1]+bbtlr)
-    ax2.plot(pt[0], pt[1], 'o', markersize=7)
+    axs[1,1].plot(pt[0], pt[1], 'o', markersize=7)
+    axs[1,1].set_title('selected injection point')
 
     plt.show()
 
@@ -234,52 +242,5 @@ if __name__ == "__main__":
 
     pt2d = getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
     # pt3d = get_target_point_robot_pose(pt2d)
-
-
-# # Number of clusters in labels, ignoring noise if present.
-# n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
-# n_noise_ = list(labels).count(-1)
-
-# print("Estimated number of clusters: %d" % n_clusters_)
-# print("Estimated number of noise points: %d" % n_noise_)
-
-
-# Display the image and plot all contours found
-# fig, ([[ax1, ax2, ax3], [ax4, ax5, ax6]]) = plt.subplots(2, 3)
-# ax1.imshow(image_show)
-# ax2.imshow(gray_image, cmap=plt.cm.gray)
-# # ax2.imshow(blurred_ROI, cmap=plt.cm.gray)
-# # ax3.imshow(binary_ROI, cmap=plt.cm.gray)
-# ax4.imshow(vein_map, cmap=plt.cm.gray)
-# ax5.imshow(vein_map, cmap=plt.cm.gray)
-# ax5.plot(vein_line_x, vein_line_y, '-k', label='Line model from all data')
-# plt.show()
-# ax6.plot(line_x_r, line_y_r, '-k', label='Line model from all data')
-# ax6.imshow(rgb_ROI_img, cmap=plt.cm.gray)
-
-'''
-# draw circles around insertion point
-selected_point = insert_candidates[0]
-rr, cc = circle_perimeter(selected_point[0], selected_point[1], 3)
-# selection = img_as_ubyte(selection)
-cand_points[rr, cc] = 1
-
-#show greyscale histogram 
-histogram, bin_edges = np.histogram(blurred_image, bins=(mask_lbx-mask_rtx)*(mask_lby-mask_rty), range=(0, 256))
-plt.plot(bin_edges[0:-1], histogram)
-plt.title("Grayscale Histogram")
-plt.xlabel("grayscale value")
-plt.ylabel("pixels")
-plt.xlim(0, 256)
-plt.show()
-
-# physcial reachable region 
-mask_rtr = 250
-mask_rtc = 280
-mask_lbr = 380
-mask_lbc = 480
-
-ROI_img = generateROIImg(gray_image, mask_rtr, mask_rtc, mask_lbr, mask_lbc) 
-'''
 
 

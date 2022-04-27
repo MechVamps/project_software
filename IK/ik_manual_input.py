@@ -17,7 +17,8 @@ target = [178,30,-304] # where do you want the object to be
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-serial_port = 'COM7'
+# serial_port = 'COM7'
+serial_port =  '/dev/ttyACM0'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
