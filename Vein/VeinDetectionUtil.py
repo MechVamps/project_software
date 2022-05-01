@@ -79,7 +79,7 @@ def get_vein(vein_map):
     # TODO: make vein selection more robust 
     # vein_map == 1 is the biggest vein cluster (0 is always the skin background)
     # idx_array_tuple = np.where(vein_map==1)
-    idx_array_tuple = np.where(vein_map==7)
+    idx_array_tuple = np.where(vein_map==3)
     x = np.array(idx_array_tuple[1])
     y = np.array(idx_array_tuple[0])
     idx_array = np.column_stack([x, y])
