@@ -22,8 +22,8 @@ print("target point for ik: ", target)
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-# serial_port = 'COM7'
-serial_port =  '/dev/ttyACM0'
+serial_port = 'COM7'
+#serial_port =  '/dev/ttyACM0'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
@@ -107,25 +107,25 @@ def serial_to_arduino(steps,lin_act_dir):
 
 # Step 1
 chain_and_gantry_ik(init_loc,target)
-serial_to_arduino(steps,'none')
+serial_to_arduino(steps,'0') #0 is retract
 time.sleep(20)
 
 # # Step 2
 # chain_and_gantry_ik(target,under_skin)
-# serial_to_arduino(steps,'none')
+# serial_to_arduino(steps,'0')
 # time.sleep(10)
 
 # # Step 3
 # chain_and_gantry_ik(under_skin,under_skin)
-# serial_to_arduino(steps,'push')
+# serial_to_arduino(steps,'1') #1 is extend
 # time.sleep(10)
 
 # # Step 4
 # chain_and_gantry_ik(under_skin,target)
-# serial_to_arduino(steps,'none')
+# serial_to_arduino(steps,'1')
 # time.sleep(10)
 
 # # Step 5
 # chain_and_gantry_ik(target,init_loc)
-# serial_to_arduino(steps,'none')
+# serial_to_arduino(steps,'1')
 # time.sleep(20)

@@ -17,8 +17,8 @@ target = [178,30,-304] # where do you want the object to be
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-# serial_port = 'COM7'
-serial_port =  '/dev/ttyACM0'
+serial_port = 'COM7'
+#serial_port =  '/dev/ttyACM0'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
@@ -107,6 +107,18 @@ time.sleep(15)
 
 # chain_and_gantry_ik(under_skin,target)
 # serial_to_arduino(steps,'none')
+# time.sleep(10)
+
+# chain_and_gantry_ik(origin,origin)
+# serial_to_arduino(steps,'0') #0 is retract
+# time.sleep(10)
+
+# chain_and_gantry_ik(origin,origin)
+# serial_to_arduino(steps,'0') #0 is retract
+# time.sleep(10)
+
+# chain_and_gantry_ik(origin,origin)
+# serial_to_arduino(steps,'1') #1 is push
 # time.sleep(10)
 
 
