@@ -110,14 +110,18 @@ void loop() {
           servo_moved=true;
         }
 
-         //LINEAR ACTUATOR MOVE
-        if(inject == 'push'){
-          // retracts the actuator
+        //LINEAR ACTUATOR MOVE
+        int injectT = inject.toInt();
+        if(injectT == 1){
+          // extend the actuator
+          digitalWrite(IN1_PIN, HIGH);
+          digitalWrite(IN2_PIN, LOW);
+        }
+        else{          
+          //retracts the actuator
           digitalWrite(IN1_PIN, LOW);
           digitalWrite(IN2_PIN, HIGH);
           delay(1000);
-        }
-        else{
           
         }
         // SANITY CHECK
