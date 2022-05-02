@@ -36,10 +36,13 @@ void setup() {
   delay(500);
   // Sanity check LED
 
-  Servo1.write(25);
-  delay(100);
+//  Servo1.write(25);
+//  delay(100);
   
   pinMode(LED_BUILTIN, OUTPUT);
+  
+  Servo1.write(135);
+  delay(500);
 }
 void loop() {
    if (Serial.available())
@@ -56,6 +59,7 @@ void loop() {
         String inject = a.substring(thirdCommaIndex + 1);
 
         int rotations = x.toInt();
+        Serial.print(rotations);
         int rotations1 = y.toInt();
         int end_angle = angle.toInt();
 

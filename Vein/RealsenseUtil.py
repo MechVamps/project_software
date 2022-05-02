@@ -9,10 +9,10 @@ def get_target_point_camera_pose():
     target_point_camera_pose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
     # Set ROI bounding box top left(bbtl[x/y]) and bottom right(bbbr[x/y]) corners 
-    mask_rty = 340
-    mask_rtx = 550
-    mask_lby = 520
-    mask_lbx = 820
+    mask_rty = 230
+    mask_rtx = 580
+    mask_lby = 330
+    mask_lbx = 840
 
     # Configure IR stream
     pipeline = rs.pipeline()
@@ -60,7 +60,7 @@ def get_target_point_camera_pose():
             target_point = getTargetPoint2D(gray_image, mask_rty, mask_rtx, mask_lby, mask_lbx)
             # print("target_point in image coord: ", target_point)
             depth = depth_frame.get_distance(target_point[0], target_point[1])
-            # print("depth: ", depth)
+            print("depth: ", depth)
             # target_point = [187, 342]
 
             # align color and depth image

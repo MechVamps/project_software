@@ -39,12 +39,12 @@ def getBinaryROIImg(roi):
     
     # TODO: make contrast ratio a parameter
     hi_contr_ROI = np.clip(1.1*blurred_ROI, 0, 255)
-    vein_mask_thresh = 190
+    vein_mask_thresh = 165
     # binary_ROI = blurred_ROI < vein_mask_thresh
     # binary_ROI = binary_ROI > 170
     binary_ROI = hi_contr_ROI < vein_mask_thresh
 
-    # footprint = disk(6)
+    # footprint = disk(0.5)
     # eroded = erosion(binary_ROI, footprint)
 
     # fig, [ax1, ax2] = plt.subplots(2)
@@ -52,6 +52,7 @@ def getBinaryROIImg(roi):
     # ax2.imshow(binary_ROI)
     # plt.plot()
     masked_ROI = blurred_ROI * binary_ROI 
+    masked_ROI[masked_ROI != 0] = 100
     return masked_ROI
 
 def get_vein_map(masked_ROI):
@@ -61,7 +62,7 @@ def get_vein_map(masked_ROI):
     masked_ROI_flat = np.reshape(masked_ROI, [-1,1])
     xy_pixels = np.hstack((masked_ROI_flat, indices_flat))
 
-    db = DBSCAN(eps=10, min_samples=200, metric = 'euclidean',algorithm ='auto').fit(xy_pixels) 
+    db = DBSCAN(eps=15, min_samples=200, metric = 'euclidean',algorithm ='auto').fit(xy_pixels) 
     core_coord = np.unravel_index(db.core_sample_indices_, masked_ROI.shape)
     cluster_map = img_as_float(np.zeros_like(masked_ROI))
     labels = db.labels_
@@ -79,7 +80,7 @@ def get_vein(vein_map):
     # TODO: make vein selection more robust 
     # vein_map == 1 is the biggest vein cluster (0 is always the skin background)
     # idx_array_tuple = np.where(vein_map==1)
-    idx_array_tuple = np.where(vein_map==3)
+    idx_array_tuple = np.where(vein_map==1)
     x = np.array(idx_array_tuple[1])
     y = np.array(idx_array_tuple[0])
     idx_array = np.column_stack([x, y])
@@ -130,7 +131,7 @@ def get_target_point_2d(vein_cx, vein_cy):
 
 def get_camera_to_robot_tf_matrix(camera_target_pt):
     # TODO: calculate transformation matrix
-    dist_n2c = [35, 73, 280] # distance from needle tip point to camera origin 
+    dist_n2c = [0, 110, 280] # distance from needle tip point to camera origin 
     Trans_n2c = np.asarray([[1,0,0,dist_n2c[0]], [0, 1, 0, dist_n2c[1]], [0, 0, 1, dist_n2c[2]], [0, 0, 0, 1]]) # translation from needle point to camera center 
     # Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
     # Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 
