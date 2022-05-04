@@ -13,12 +13,12 @@ import time
 ## Input
 #target = get_target_point_camera_pose()
 origin = [128,20,-304]
-target = [178,30,-304] # where do you want the object to be
+target = [163,93,-304] # where do you want the object to be
 angle = 0 # yaw angle
 init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-serial_port = 'COM7'
-#serial_port =  '/dev/ttyACM0'
+# serial_port = 'COM7'
+serial_port =  '/dev/ttyACM0'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
@@ -101,9 +101,14 @@ def serial_to_arduino(steps,lin_act_dir):
        time.sleep(1)
 
 # Step test
-chain_and_gantry_ik(origin,init_loc)
+# chain_and_gantry_ik(origin,init_loc)
+chain_and_gantry_ik(init_loc,origin)
 serial_to_arduino(steps,'none')
-time.sleep(15)
+time.sleep(20)
+
+# chain_and_gantry_ik(init_loc,target)
+# serial_to_arduino(steps,'none')
+# time.sleep(30)
 
 # # Step 1
 # chain_and_gantry_ik(init_loc,target)

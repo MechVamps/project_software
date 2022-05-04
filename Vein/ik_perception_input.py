@@ -14,16 +14,16 @@ from RealsenseUtil import get_target_point_camera_pose
 ## Input
 tf_matrix_to_target = get_target_point_camera_pose()
 origin = [128,20,-304]
+# init_loc = [158,20,-304] # At start, this is where it is
 #target = [178,30,-304] 
 target = np.asarray([[1,0,0,origin[0]], [0, 1, 0, origin[1]], [0, 0, 1, origin[2]], [0, 0, 0, 1]]) @ tf_matrix_to_target # translation from needle point to camera center 
 target = [target[0, 3], target[1, 3], target[2, 3]]
 print("target point for ik: ", target)
 # where do you want the object to be
 angle = 0 # yaw angle
-init_loc = [158,20,-304] # At start, this is where it is
 #gantry_origin = [7.5,5.6,-304]
-serial_port = 'COM7'
-#serial_port =  '/dev/ttyACM0'
+# serial_port = 'COM7'
+serial_port =  '/dev/ttyACM0'
 
 ## Variables
 stepsperrev = 200 #200 steps/rev
@@ -108,10 +108,22 @@ def serial_to_arduino(steps,lin_act_dir):
     read_data = ser.read(0x100)
     print(read_data)
 
+<<<<<<< HEAD
 # Step 1
 chain_and_gantry_ik(origin,target)
 serial_to_arduino(steps,'0') #0 is retract
+=======
+# Step 0
+# chain_and_gantry_ik(origin,init_loc)
+chain_and_gantry_ik(origin,target)
+serial_to_arduino(steps,'none')
+>>>>>>> master
 time.sleep(20)
+
+# Step 1
+# chain_and_gantry_ik(init_loc,target)
+# serial_to_arduino(steps,'0') #0 is retract
+# time.sleep(120)
 
 # # Step 2
 # chain_and_gantry_ik(target,under_skin)
@@ -129,6 +141,17 @@ time.sleep(5)
 # time.sleep(10)
 
 # Step 5
+<<<<<<< HEAD
 chain_and_gantry_ik(target,origin)
 serial_to_arduino(steps,'1')
 time.sleep(20)
+=======
+# chain_and_gantry_ik(target,init_loc)
+# serial_to_arduino(steps,'1')
+# time.sleep(30)
+
+
+chain_and_gantry_ik(target, origin)
+serial_to_arduino(steps,'1')
+time.sleep(30)
+>>>>>>> master
