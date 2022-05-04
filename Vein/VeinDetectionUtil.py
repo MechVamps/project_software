@@ -130,7 +130,7 @@ def get_target_point_2d(vein_cx, vein_cy):
 
 def get_camera_to_robot_tf_matrix(camera_target_pt):
     # TODO: calculate transformation matrix
-    dist_n2c = [35, 73, 280] # distance from needle tip point to camera origin 
+    dist_n2c = [35, 43, 280] # distance from needle tip point to camera origin 
     Trans_n2c = np.asarray([[1,0,0,dist_n2c[0]], [0, 1, 0, dist_n2c[1]], [0, 0, 1, dist_n2c[2]], [0, 0, 0, 1]]) # translation from needle point to camera center 
     # Rot_y = np.asarray([[-1, 0, 0, 0], [0, 1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) # 180 deg rotation around y axis 
     # Rot_z = np.asarray([[0, -1, 0, 0], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]) # 90 deg rotation around z axis, align needle axis directions with camera's 

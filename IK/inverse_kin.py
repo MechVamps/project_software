@@ -11,7 +11,7 @@ import time
 
 ## Serial Setup to Arduino
 
-target = [128,20,-304] #final
+target = [188,50,-304] #final
 angleo = 0 # yaw angle
 angle = angleo #+ 90 #-65
 init_loc = [128,20,-304]
@@ -72,8 +72,8 @@ def chain_and_gantry_ik(initial,final):
     print(steps)
 
     ax = matplotlib.pyplot.figure().add_subplot(111, projection='3d')
-    ax.set_xlabel('x')
-    ax.set_ylabel('y')
+    ax.set_xlabel('y')
+    ax.set_ylabel('x')
     ax.set_zlabel('z')
     my_chain.plot(location, ax)
     matplotlib.pyplot.show()

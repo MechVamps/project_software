@@ -104,9 +104,12 @@ def serial_to_arduino(steps,lin_act_dir):
     if True:
        ser.write(ser_input)
        time.sleep(1)
+    
+    read_data = ser.read(0x100)
+    print(read_data)
 
 # Step 1
-chain_and_gantry_ik(init_loc,target)
+chain_and_gantry_ik(origin,target)
 serial_to_arduino(steps,'0') #0 is retract
 time.sleep(20)
 
@@ -115,17 +118,17 @@ time.sleep(20)
 # serial_to_arduino(steps,'0')
 # time.sleep(10)
 
-# # Step 3
-# chain_and_gantry_ik(under_skin,under_skin)
-# serial_to_arduino(steps,'1') #1 is extend
-# time.sleep(10)
+# Step 3
+chain_and_gantry_ik(under_skin,under_skin)
+serial_to_arduino(steps,'1') #1 is extend
+time.sleep(5)
 
 # # Step 4
 # chain_and_gantry_ik(under_skin,target)
 # serial_to_arduino(steps,'1')
 # time.sleep(10)
 
-# # Step 5
-# chain_and_gantry_ik(target,init_loc)
-# serial_to_arduino(steps,'1')
-# time.sleep(20)
+# Step 5
+chain_and_gantry_ik(target,origin)
+serial_to_arduino(steps,'1')
+time.sleep(20)

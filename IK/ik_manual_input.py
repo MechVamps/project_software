@@ -105,23 +105,6 @@ chain_and_gantry_ik(origin,init_loc)
 serial_to_arduino(steps,'none')
 time.sleep(15)
 
-# chain_and_gantry_ik(under_skin,target)
-# serial_to_arduino(steps,'none')
-# time.sleep(10)
-
-# chain_and_gantry_ik(origin,origin)
-# serial_to_arduino(steps,'0') #0 is retract
-# time.sleep(10)
-
-# chain_and_gantry_ik(origin,origin)
-# serial_to_arduino(steps,'0') #0 is retract
-# time.sleep(10)
-
-# chain_and_gantry_ik(origin,origin)
-# serial_to_arduino(steps,'1') #1 is push
-# time.sleep(10)
-
-
 # # Step 1
 # chain_and_gantry_ik(init_loc,target)
 # serial_to_arduino(steps,'none')

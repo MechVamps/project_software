@@ -36,7 +36,7 @@ void setup() {
   delay(500);
   // Sanity check LED
 
-  Servo1.write(25);
+  Servo1.write(135);
   delay(100);
   
   pinMode(LED_BUILTIN, OUTPUT);
@@ -46,6 +46,7 @@ void loop() {
     {
         // SERIAL READ
         String a = Serial.readString();
+        //String a = "-12,-23;0;1";
         int commaIndex = a.indexOf(',');
         int secondCommaIndex = a.indexOf(';');
         int thirdCommaIndex = a.indexOf('?');
@@ -58,6 +59,31 @@ void loop() {
         int rotations = x.toInt();
         int rotations1 = y.toInt();
         int end_angle = angle.toInt();
+
+        Serial.write(rotations);
+
+        // SERVO MOVE
+        if(servo_moved==false){
+          Servo1.write(end_angle);
+          delay(500);
+          servo_moved=true;
+        }
+
+        //LINEAR ACTUATOR MOVE
+        int injectT = inject.toInt();
+        if(injectT == 1){
+          // extend the actuator
+          digitalWrite(IN1_PIN, HIGH);
+          digitalWrite(IN2_PIN, LOW);
+          delay(1000);
+        }
+        else{          
+          //retracts the actuator
+          digitalWrite(IN1_PIN, LOW);
+          digitalWrite(IN2_PIN, HIGH);
+          delay(1000);
+          
+        }
 
         // MOTOR DIRECTION
         if(rotations >= 0){
@@ -103,27 +129,7 @@ void loop() {
         delay(500);
 
 
-        // SERVO MOVE
-        if(servo_moved==false){
-          Servo1.write(end_angle);
-          delay(500);
-          servo_moved=true;
-        }
-
-        //LINEAR ACTUATOR MOVE
-        int injectT = inject.toInt();
-        if(injectT == 1){
-          // extend the actuator
-          digitalWrite(IN1_PIN, HIGH);
-          digitalWrite(IN2_PIN, LOW);
-        }
-        else{          
-          //retracts the actuator
-          digitalWrite(IN1_PIN, LOW);
-          digitalWrite(IN2_PIN, HIGH);
-          delay(1000);
-          
-        }
+        
         // SANITY CHECK
         digitalWrite(LED_BUILTIN, LOW);
     }
